@@ -76,6 +76,6 @@ public:
     void render(sf::RenderTarget* target = nullptr);
 
     //do usuniecia
-
+    Point botGuess();
 };
 

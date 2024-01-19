@@ -660,36 +660,76 @@ void ShipPlacementState::render(sf::RenderTarget* target)
 }
 
 //do innego state'a
-int bot_hit = 0; //0- jeszcze nic nie trafil    1- trafil pierwszy raz  2- trafil drugi i dalej raz
 Point prev_guess{ 2,2 };
-//Point ShipPlacementState::botGuess()
-//{
-//    Point A{ 0,0 };
-//    if (bot_hit == 0) //rand guess
-//    {
-//        do {
-//            A.x = rand() % 10;
-//            A.y = rand() % 10;
-//        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] = 3);
-//    }
-//    int val[] = { 0,1,0,-1,0 };
-//    else if (bot_hit == 1)
-//    {
-//        do {
-//            A = prev_guess;
-//            int i = rand() % 4;
-//            A.x += val[i];
-//            A.y += val[i + 1];
-//        } while ((playerBoard[A.x][A.y] == 4);
-//    }
-//    else if (bot_hit >= 2)
-//    {
-//        for (int i = 0; i < 4; i++)
-//        {
-//            A = prev_guess;
-//            A.x += val[i];
-//            A.y += val[i + 1];
-//
-//        }
-//    }
-//}
+//przy inicjalizacji prev_guess = {-1, -1};
+//potrzeba funkcji, ktora bedzie update'owac plansze gracza w zaleznosci od strzalu bota
+Point ShipPlacementState::botGuess()
+{
+    bool know_dir = 0;
+    Point A = prev_guess;
+    int val[] = { 0,1,0,-1,0 };
+    if (A.x == -1 || playerBoard[A.x][A.y] == 3) //jesli strzela po raz pierwszy, lub zatopil poprzedni statek
+    {
+        do {
+            A.x = rand() % 10;
+            A.y = rand() % 10;
+        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
+        if (playerBoard[A.x][A.y] == 1) //jesli strzal bedzie oddany w statek
+            prev_guess = A;
+        return A;
+    }
+    else if (playerBoard[A.x][A.y] == 2) //jesli poprzedni strzal zostal oddany w statek
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
+                || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
+            {
+                continue;
+            }
+            Point A = prev_guess;
+            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2)//jesli znalazl kierunek w jakim ustawiony jest statek
+            {
+                know_dir = true;
+                //A.x += val[i];
+                //A.y += val[i + 1];
+                do {    //szukaj kolejnego nietrafionego jeszcze w tym kierunku
+                    A.x += val[i];
+                    A.y += val[i + 1];
+
+                    //jesli kolejny punkt do sprawdzenia bedzie lezal poza plansza
+                    //lub strzelil juz w tym kierunku i nie trafil zmien zwrot
+                    if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
+                        || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
+                    {
+                        i++;
+                        continue;
+                    }
+                } while (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2);
+
+                if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 1) //jesli strzal ten bedzie w statek, ustaw prev_guess na ten punkt
+                {
+                    prev_guess.x = A.x + val[i];
+                    prev_guess.y = A.y + val[i + 1];
+                    return A;
+                }
+                else if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 0)
+                {
+                    prev_guess = A;
+                    return A;
+                }
+            }
+        }
+        if (!know_dir) //jesli nie znalazl jeszcze kierunku statku
+        {
+            do { //strzelanie dopoki nie trafi drugiego kawalka statku
+                A = prev_guess;
+                int i = rand() % 4;
+                A.x += val[i];
+                A.y += val[i + 1];
+            } while (playerBoard[A.x][A.y] == 4);
+            return A;
+        }
+    }
+}
+//zmiana w kodzie
