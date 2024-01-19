@@ -131,13 +131,21 @@ void GameState::updateInput()
     this->checkForQuit();
 }
 
-void GameState::updateMousePosGrid()
+Point GameState::updateMousePosGrid()
 {
+    Point A{ 0,0 };
     if (this->mousePosView.x >= this->enemyGridStartPosition.x && this->mousePosView.x <= this->enemyGridStartPosition.x + 400.f
         && this->mousePosView.y >= this->enemyGridStartPosition.y && this->mousePosView.y <= this->enemyGridStartPosition.y + 400.f)
     {
         this->mousePosGrid.y = static_cast<int>((this->mousePosView.x - this->enemyGridStartPosition.x) / this->fieldSize);
         this->mousePosGrid.x = static_cast<int>((this->mousePosView.y - this->enemyGridStartPosition.y) / this->fieldSize);
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        {
+            A.x = mousePosGrid.x;
+            A.y = mousePosGrid.y;
+            if (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1)
+                return A;
+        }
     }
     else
     {
@@ -157,6 +165,7 @@ void GameState::updateGrids() //ruch gracza
 
             if (this->enemyGrid[i][j]->isHidden() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->enemyGrid[i][j]->isMouseOverShape(mousePosView))
             {
+                
                 if (this->enemyBoard[i][j] == 0) this->enemyBoard[i][j] = 4;
                 else if (this->enemyBoard[i][j] == 1)
                 {
@@ -166,6 +175,7 @@ void GameState::updateGrids() //ruch gracza
 
                 this->enemyGrid[i][j]->reveal();
                 this->enemyGrid[i][j]->update(this->enemyBoard[i][j]);
+                //bool player_made_move = 1;
             }
         }
     }

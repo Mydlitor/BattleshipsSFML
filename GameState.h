@@ -47,7 +47,7 @@ public:
 
     // Update
     void updateInput();
-    void updateMousePosGrid();
+    Point updateMousePosGrid();
     void updateGrids();
     void update();
 
@@ -55,5 +55,7 @@ public:
     void renderText(sf::RenderTarget& target);
     void renderGrids(sf::RenderTarget* target = nullptr);
     void render(sf::RenderTarget* target = nullptr);
+
+    void test();
 };
 
