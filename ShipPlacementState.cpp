@@ -374,6 +374,7 @@ void ShipPlacementState::placeSelectedShip()
 
         if (isValidPlacement(A,B))
         {
+            this->placingSound.play();
             ship_nr++;
             Point Ap{ A }, Bp{ B };
             if (A.x > 0) Ap.x--;
