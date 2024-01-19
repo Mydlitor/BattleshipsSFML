@@ -242,3 +242,46 @@ void GameState::render(sf::RenderTarget* target)
 
     this->window->display();
 }
+
+//zupelny prototyp
+//int round = 0;
+//Point A{ 0,0 };
+//while (player.shipcount > 0 && bot.shipcout > 0)
+//{
+//    if (round % 2 == 0)
+//    {
+//        //runda gracza
+//    }
+//    else
+//    {
+//        
+//        A = botGuess();
+//        if(updatePlayerBoard(A) {
+            if (playerboard[A.x][A.y] == 0)
+            {
+                playerboard[A.x][A.y] = 4;
+                return false;
+            }
+                
+            else if (playerboard[A.x][A.y] == 1)
+            {
+                playerboard[A.x][A.y] = 2;
+                return true;
+            }
+            else if (/*statek zatopiony*/)
+            {
+                playerboard[A.x][A.y] = 3; //bedzie trzeba jeszcze caly statek pozamieniac na 3
+                return true;
+            }
+                
+        })
+//            round++;
+//
+//        
+//        //runda bota
+//    }
+//}
+//if(player.shipcount==0)
+//    bot wins
+//else
+//    player wins
