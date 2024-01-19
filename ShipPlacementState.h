@@ -41,6 +41,14 @@ private:
     void initShips();
     void initButtons();
     void initEnemyBoard();
+    void botUpdatePlane(Point A, Point B);
+    void playerUpdatePlane(Point A, Point B);
+    bool botCheckFreeSpace(Point A, Point B);
+    bool playerCheckFreeSpace(Point A, Point B);
+    void botClearPlane();
+    void playerClearPlane();
+    bool CordsOnPlane(Point A);
+    void sAB(Point& A, Point& B);
 
 public:
     ShipPlacementState(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard);
@@ -55,7 +63,7 @@ public:
     void updateShips(); // Records the last clicked ship. Changes color if the cursor is over the object or clicked.
     void updateGrid(); // Updates the grid, displaying the set ships, and shows the position of the currently placing ship.
     void placeSelectedShip(); // Places a selected ship on the game board at the specified location.
-    bool isValidPlacement(); // Checks whether it is allowed to place the ship in a specific location.
+    bool isValidPlacement(Point A, Point B); // Checks whether it is allowed to place the ship in a specific location.
     bool checkIfAllShipsArePlaced(); // Returns true if all ships are placed, false otherwise. Enables the activation of the Start Button.
     void updateButtons(); // Enables progression to the next stage. Changes color if the cursor is over the button.
     void update();
@@ -66,5 +74,8 @@ public:
     void renderShips(sf::RenderTarget* target = nullptr);
     void renderButtons(sf::RenderTarget* target = nullptr);
     void render(sf::RenderTarget* target = nullptr);
+
+    //do usuniecia
+
 };
 

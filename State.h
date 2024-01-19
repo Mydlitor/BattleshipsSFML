@@ -11,6 +11,11 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
+struct Point
+{
+	int x, y;
+};
+
 class State
 {
 private:
@@ -50,6 +55,10 @@ protected:
 	virtual void initAudio();
 
 public:
+	
+
+	//friend ShipPlacementState;
+
 	State(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard);
 	virtual ~State();
 

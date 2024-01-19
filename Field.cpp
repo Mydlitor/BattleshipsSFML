@@ -66,6 +66,10 @@ void Field::update(short unsigned fieldState)
 			this->shape.setFillColor(this->missColor);
 			break;
 
+		case 9:
+			this->shape.setFillColor(sf::Color::Magenta);
+			break;
+
 		default:
 			this->shape.setFillColor(sf::Color::White);
 			break;

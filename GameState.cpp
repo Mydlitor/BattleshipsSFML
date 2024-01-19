@@ -146,7 +146,7 @@ void GameState::updateMousePosGrid()
     }
 }
 
-void GameState::updateGrids()
+void GameState::updateGrids() //ruch gracza
 {
     for (int i = 0; i < this->gridSize; ++i)
     {

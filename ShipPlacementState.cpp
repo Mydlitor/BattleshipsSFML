@@ -1,5 +1,8 @@
 #include "ShipPlacementState.h"
 
+int ships_len[] = { 5,4,3,3,2 };
+int ship_nr = 0;
+
 // Initializer functions
 void ShipPlacementState::initVariables()
 {
@@ -119,29 +122,162 @@ void ShipPlacementState::initButtons()
         sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120));
 }
 
+void ShipPlacementState::sAB(Point& A, Point& B)
+{
+    if (A.x > B.x) std::swap(A.x, B.x);
+    if (A.y > B.y) std::swap(A.y, B.y);
+}
+
+bool ShipPlacementState::CordsOnPlane(Point A)
+{
+    if (A.x < 0 || A.x>9 || A.y < 0 || A.y>9)
+        return false;
+    return true;
+}
+
+void ShipPlacementState::botClearPlane()
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (enemyBoard[i][j] == 9)
+                enemyBoard[i][j] = 0;
+        }
+    }
+}
+
+void ShipPlacementState::playerClearPlane()
+{
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (playerBoard[i][j] == 9)
+                playerBoard[i][j] = 0;
+        }
+    }
+}
+
+bool ShipPlacementState::botCheckFreeSpace(Point A, Point B)
+{
+    for (int x = A.x; x <= B.x; x++)
+    {
+        for (int y = A.y; y <= B.y; y++)
+        {
+            if (enemyBoard[x][y] != 0)
+            {
+                //uncomment later
+                /*if (id == "player")
+                {
+                    cout << "\nToo close to another ship!!!\n";
+                    system("pause");
+                }*/
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool ShipPlacementState::playerCheckFreeSpace(Point A, Point B)
+{
+    for (int x = A.x; x <= B.x; x++)
+    {
+        for (int y = A.y; y <= B.y; y++)
+        {
+            if (playerBoard[x][y] != 0)
+            {
+                //uncomment later
+                /*if (id == "player")
+                {
+                    cout << "\nToo close to another ship!!!\n";
+                    system("pause");
+                }*/
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+void ShipPlacementState::botUpdatePlane(Point A, Point B)
+{
+    sAB(A, B);
+    Point Ap{ A }, Bp{ B };
+    if (A.x > 0) Ap.x--;
+    if (A.y > 0) Ap.y--;
+    if (B.x < 9) Bp.x++;
+    if (B.y < 9) Bp.y++;
+    for (int x = Ap.x; x <= Bp.x; x++)
+    {
+        for (int y = Ap.y; y <= Bp.y; y++)
+        {
+            enemyBoard[x][y] = 9;
+        }
+    }
+    for (int x = A.x; x <= B.x; x++)
+    {
+        for (int y = A.y; y <= B.y; y++)
+        {
+            enemyBoard[x][y] = 1;
+            //ship_nr[x][y] = n + 1;
+        }
+    }
+}
+
+void ShipPlacementState::playerUpdatePlane(Point A, Point B)
+{
+    sAB(A, B);
+    Point Ap{ A }, Bp{ B };
+    if (A.x > 0) Ap.x--;
+    if (A.y > 0) Ap.y--;
+    if (B.x < 9) Bp.x++;
+    if (B.y < 9) Bp.y++;
+    for (int x = Ap.x; x <= Bp.x; x++)
+    {
+        for (int y = Ap.y; y <= Bp.y; y++)
+        {
+            playerBoard[x][y] = 9;
+        }
+    }
+    for (int x = A.x; x <= B.x; x++)
+    {
+        for (int y = A.y; y <= B.y; y++)
+        {
+            playerBoard[x][y] = 1;
+            //ship_nr[x][y] = n + 1;
+        }
+    }
+}
+
 void ShipPlacementState::initEnemyBoard()
 {
-    enemyBoard[0][1] = 1;
-    enemyBoard[0][2] = 1;
-    enemyBoard[0][3] = 1;
-    enemyBoard[0][4] = 1;
+    Point A{ 0,0 }, B{ 0,0 };
+    int xy = 0;
+    for (int i = 0; i < sizeof(ships_len) / sizeof(ships_len[0]); i++)
+    {
+        do {
+            xy = rand() % 2;
+            if (xy == 0)
+            {
+                A = { rand() % 10, rand() % 10 - ships_len[i] };
+                B.x = A.x;
+                B.y = A.y + ships_len[i] - 1;
+            }
+            else
+            {
+                A = { rand() % 10 - ships_len[i], rand() % 10 };
+                B.x = A.x + ships_len[i] - 1;
+                B.y = A.y;
+            }
+        } while (!CordsOnPlane(A) || !CordsOnPlane(B) || !botCheckFreeSpace(A, B));
 
-    enemyBoard[5][9] = 1;
-    enemyBoard[6][9] = 1;
-    enemyBoard[7][9] = 1;
-    enemyBoard[8][9] = 1;
-    enemyBoard[9][9] = 1;
+        botUpdatePlane(A, B);
 
-    enemyBoard[2][4] = 1;
-    enemyBoard[3][4] = 1;
-    enemyBoard[4][4] = 1;
-
-    enemyBoard[0][6] = 1;
-    enemyBoard[0][7] = 1;
-    enemyBoard[0][8] = 1;
-
-    enemyBoard[6][6] = 1;
-    enemyBoard[6][7] = 1;
+        //c_ships++;
+    }
+    botClearPlane();
 }
 
 // Constructors / Destructors
@@ -172,6 +308,7 @@ ShipPlacementState::~ShipPlacementState()
 
     delete this->buttons["START"];
     delete this->buttons["RESET"];
+    //abort;
 }
 
 // Functions
@@ -223,26 +360,61 @@ void ShipPlacementState::placeSelectedShip()
     {
         this->shipSizeInCells = static_cast<int>(this->selectedShip->getShape().getSize().x / this->fieldSize);
 
-        if (isValidPlacement())
+        Point A{ mousePosGrid.x, mousePosGrid.y };
+        Point B = A;
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
         {
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+            B.x += this->shipSizeInCells -1;
+        }
+        else
+        {
+            B.y += this->shipSizeInCells-1;
+        }
+        sAB(A, B);
+
+        if (isValidPlacement(A,B))
+        {
+            ship_nr++;
+            Point Ap{ A }, Bp{ B };
+            if (A.x > 0) Ap.x--;
+            if (A.y > 0) Ap.y--;
+            if (B.x < 9) Bp.x++;
+            if (B.y < 9) Bp.y++;
+            for (int x = Ap.x; x <= Bp.x; x++)
             {
-                // Set the ship in a vertical position
-                for (int i = 0; i < this->shipSizeInCells; ++i)
+                for (int y = Ap.y; y <= Bp.y; y++)
                 {
-                    this->playerBoard[this->mousePosGrid.x + i][this->mousePosGrid.y] = 1;
+                    playerBoard[x][y] = 9;
                 }
-                this->placingSound.play();
             }
-            else
+            for (int x = A.x; x <= B.x; x++)
             {
-                // Set the ship in a horizontal position
-                for (int i = 0; i < this->shipSizeInCells; ++i)
+                for (int y = A.y; y <= B.y; y++)
                 {
-                    this->playerBoard[this->mousePosGrid.x][this->mousePosGrid.y + i] = 1;
+                    playerBoard[x][y] = 1;
+                    //ship_nr[x][y] = n + 1;
                 }
-                this->placingSound.play();
             }
+
+
+            //if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+            //{
+            //    // Set the ship in a vertical position
+            //    for (int i = 0; i < this->shipSizeInCells; ++i)
+            //    {
+            //        this->playerBoard[this->mousePosGrid.x + i][this->mousePosGrid.y] = 1;
+            //    }
+            //    this->placingSound.play();
+            //}
+            //else
+            //{
+            //    // Set the ship in a horizontal position
+            //    for (int i = 0; i < this->shipSizeInCells; ++i)
+            //    {
+            //        this->playerBoard[this->mousePosGrid.x][this->mousePosGrid.y + i] = 1;
+            //    }
+            //    this->placingSound.play();
+            //}
 
             this->selectedShip->setPlaced(SHIP_PLACED);
             this->selectedShip = nullptr;
@@ -250,16 +422,23 @@ void ShipPlacementState::placeSelectedShip()
         }
     }
 }
-// Do poprawienia
-bool ShipPlacementState::isValidPlacement()
+// Do poprawienia //juz nie
+bool ShipPlacementState::isValidPlacement(Point A, Point B)
 {
-    if (this->mousePosGrid.y < 0 || this->mousePosGrid.y + this->shipSizeInCells > this->gridSize ||
-        this->mousePosGrid.x < 0 || this->mousePosGrid.x + this->shipSizeInCells > this->gridSize)
+    //if (this->mousePosGrid.y < 0 || this->mousePosGrid.y + this->shipSizeInCells > this->gridSize ||
+    //    this->mousePosGrid.x < 0 || this->mousePosGrid.x + this->shipSizeInCells > this->gridSize)
+
+    if (this->mousePosGrid.y < 0 || this->mousePosGrid.y > 9 ||
+        this->mousePosGrid.x < 0 || this->mousePosGrid.x > 9)
     {
         return false; // Out of bounds
     }
+    
+    if (!CordsOnPlane(A) || !CordsOnPlane(B) || !playerCheckFreeSpace(A, B))
+        return false;
+    return true;
 
-    // Check for collisions and adjacency
+    /* Check for collisions and adjacency
     for (int i = -1; i <= this->shipSizeInCells; ++i)
     {
         for (int j = -1; j <= 1; ++j)
@@ -317,9 +496,9 @@ bool ShipPlacementState::isValidPlacement()
         {
             return false; // Adjacency detected below
         }
-    }
+    }*/
 
-    return true; // Valid placement
+     // Valid placement
 }
 
 void ShipPlacementState::updateGrid()
@@ -362,7 +541,7 @@ bool ShipPlacementState::checkIfAllShipsArePlaced()
             return false; // If at least one ship is not placed yet, return false
         }
     }
-
+    //playerClearPlane();
     return true; // If all ships are placed, return true
 }
 
@@ -378,7 +557,11 @@ void ShipPlacementState::updateButtons()
         this->selectSound.play();
 
         if (this->allShipsPlaced)
+        {
+            playerClearPlane();
             this->states->push(new GameState(this->window, this->states, this->playerBoard, this->enemyBoard));
+        }
+            
     }
 
     if (this->buttons["RESET"]->isPressed())
@@ -475,3 +658,38 @@ void ShipPlacementState::render(sf::RenderTarget* target)
 
     this->window->display();
 }
+
+//do innego state'a
+int bot_hit = 0; //0- jeszcze nic nie trafil    1- trafil pierwszy raz  2- trafil drugi i dalej raz
+Point prev_guess{ 2,2 };
+//Point ShipPlacementState::botGuess()
+//{
+//    Point A{ 0,0 };
+//    if (bot_hit == 0) //rand guess
+//    {
+//        do {
+//            A.x = rand() % 10;
+//            A.y = rand() % 10;
+//        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] = 3);
+//    }
+//    int val[] = { 0,1,0,-1,0 };
+//    else if (bot_hit == 1)
+//    {
+//        do {
+//            A = prev_guess;
+//            int i = rand() % 4;
+//            A.x += val[i];
+//            A.y += val[i + 1];
+//        } while ((playerBoard[A.x][A.y] == 4);
+//    }
+//    else if (bot_hit >= 2)
+//    {
+//        for (int i = 0; i < 4; i++)
+//        {
+//            A = prev_guess;
+//            A.x += val[i];
+//            A.y += val[i + 1];
+//
+//        }
+//    }
+//}
