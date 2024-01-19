@@ -24,6 +24,9 @@ private:
 	sf::RectangleShape bar1;
 	sf::RectangleShape bar2;
 
+	// Dot shape
+	sf::CircleShape dot;
+
 	// Colors
 	sf::Color borderColor;
 	sf::Color emptyColor;
@@ -38,6 +41,7 @@ public:
 	
 	// Functions
 	void setCross();
+	void setDot();
 	void reveal();
 	void setHovered(bool isHovered);
 

@@ -31,6 +31,11 @@ Field::Field(int x, int y, float offsetX, float offsetY, float size, bool status
 	this->bar2.setSize(sf::Vector2f(size - 2.f, size / 8));
 	this->bar2.setFillColor(sf::Color::Transparent);
 	this->bar2.setRotation(-45);
+
+	// Dot
+	this->dot.setPosition(sf::Vector2f(y * size + offsetX + size / 2 - 8.f, x * size + offsetY + size / 2 - 8.f));
+	this->dot.setRadius(8);
+	this->dot.setFillColor(sf::Color::Transparent);
 }
 
 Field::~Field()
@@ -64,6 +69,7 @@ void Field::update(short unsigned fieldState)
 
 		case 4: // MISS
 			this->shape.setFillColor(this->missColor);
+			setDot();
 			break;
 
 		case 9:
@@ -80,6 +86,11 @@ void Field::setCross()
 {
 	this->bar1.setFillColor(sf::Color::Red);
 	this->bar2.setFillColor(sf::Color::Red);
+}
+
+void Field::setDot()
+{
+	this->dot.setFillColor(sf::Color(80, 80, 80));
 }
 
 void Field::reveal()
@@ -119,4 +130,5 @@ void Field::render(sf::RenderTarget* target)
 	target->draw(this->shape);
 	target->draw(this->bar1);
 	target->draw(this->bar2);
+	target->draw(this->dot);
 }
