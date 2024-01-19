@@ -257,24 +257,24 @@ void GameState::render(sf::RenderTarget* target)
 //        
 //        A = botGuess();
 //        if(updatePlayerBoard(A) {
-            if (playerboard[A.x][A.y] == 0)
-            {
-                playerboard[A.x][A.y] = 4;
-                return false;
-            }
-                
-            else if (playerboard[A.x][A.y] == 1)
-            {
-                playerboard[A.x][A.y] = 2;
-                return true;
-            }
-            else if (/*statek zatopiony*/)
-            {
-                playerboard[A.x][A.y] = 3; //bedzie trzeba jeszcze caly statek pozamieniac na 3
-                return true;
-            }
-                
-        })
+//            if (playerboard[A.x][A.y] == 0)
+//            {
+//                playerboard[A.x][A.y] = 4;
+//                return false;
+//            }
+//                
+//            else if (playerboard[A.x][A.y] == 1)
+//            {
+//                playerboard[A.x][A.y] = 2;
+//                return true;
+//            }
+//            else if (/*statek zatopiony*/)
+//            {
+//                playerboard[A.x][A.y] = 3; //bedzie trzeba jeszcze caly statek pozamieniac na 3
+//                return true;
+//            }
+//                
+//        })
 //            round++;
 //
 //        
