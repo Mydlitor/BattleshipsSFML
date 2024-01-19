@@ -732,3 +732,4 @@ Point ShipPlacementState::botGuess()
         }
     }
 }
+//zmiana w kodzie
