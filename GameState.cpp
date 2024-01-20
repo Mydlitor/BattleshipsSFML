@@ -13,6 +13,7 @@ void GameState::initVariables()
     this->prev_guess.x = -1;
     this->prev_guess.y = -1;
     this->know_dir = false;
+    this->ship_hit = false;
 }
 
 void GameState::initText()
@@ -251,20 +252,40 @@ bool GameState::cordsOnBoard(Point A)
     return true;
 }
 
+void GameState::sAB(Point& A, Point& B)
+{
+    if (A.x > B.x) std::swap(A.x, B.x);
+    if (A.y > B.y) std::swap(A.y, B.y);
+}
+
 bool GameState::checkSank(Point A, int player) //1-player  2-bot
 {
     int val[] = { 0,1,0,-1,0 };
     for (int i = 0; i < 4; i++)
     {
         Point B = A;
+        Begin = End = A;
         if (player == 1)
         {
             while (playerBoard[B.x][B.y] == 2) 
             {
                 B.x += val[i];
                 B.y += val[i + 1];
-                if (!cordsOnBoard(B))
+                if (!cordsOnBoard(B)|| playerBoard[B.x][B.y] == 0)
+                {
+                    if (Begin.x != A.x || Begin.y != A.y)
+                    {
+                        End.x = B.x - val[i];
+                        End.y = B.y - val[i + 1];
+                    }   
+                    else
+                    {
+                        Begin.x = B.x - val[i];
+                        Begin.y = B.y - val[i + 1];
+                    }
                     break;
+                }
+                    
                 if (playerBoard[B.x][B.y] == 1)
                     return false;
             }
@@ -275,36 +296,114 @@ bool GameState::checkSank(Point A, int player) //1-player  2-bot
             {
                 B.x += val[i];
                 B.y += val[i + 1];
-                if (!cordsOnBoard(B))
+                if (!cordsOnBoard(B) || enemyBoard[B.x][B.y] == 0)
+                {
+                    if (Begin.x != A.x || Begin.y != A.y)
+                    {
+                        End.x = B.x - val[i];
+                        End.y = B.y - val[i + 1];
+                    }
+                    else
+                    {
+                        Begin.x = B.x - val[i];
+                        Begin.y = B.y - val[i + 1];
+                    }
                     break;
+                }
                 if (enemyBoard[B.x][B.y] == 1)
                     return false;
             }
         }
     }
+
+    sAB(Begin, End);
+    Point Ap{ Begin }, Bp{ End };
+    if (Begin.x > 0) Ap.x--;
+    if (Begin.y > 0) Ap.y--;
+    if (End.x < 9) Bp.x++;
+    if (End.y < 9) Bp.y++;
+
+    if (player == 1)
+    {
+        for (int x = Ap.x; x <= Bp.x; x++)
+        {
+            for (int y = Ap.y; y <= Bp.y; y++)
+            {
+                playerBoard[x][y] = 5;
+            }
+        }
+        for (int x = Begin.x; x <= End.x; x++)
+        {
+            for (int y = Begin.y; y <= End.y; y++)
+            {
+                playerBoard[x][y] = 3;
+            }
+        }
+    }
+
+    else
+    {
+        for (int x = Ap.x; x <= Bp.x; x++)
+        {
+            for (int y = Ap.y; y <= Bp.y; y++)
+            {
+                enemyBoard[x][y] = 5;
+            }
+        }
+        for (int x = Begin.x; x <= End.x; x++)
+        {
+            for (int y = Begin.y; y <= End.y; y++)
+            {
+                enemyBoard[x][y] = 3;
+            }
+        }
+    }
+
     return true;
 }
 
-void GameState::updateSank(Point A, int player)
+void GameState::updateSank(int player)
 {
-    int val[] = { 0,1,0,-1,0 };
+    sAB(A, B);
+    Point Ap{ A }, Bp{ B };
+    if (A.x > 0) Ap.x--;
+    if (A.y > 0) Ap.y--;
+    if (B.x < 9) Bp.x++;
+    if (B.y < 9) Bp.y++;
+    for (int x = Ap.x; x <= Bp.x; x++)
+    {
+        for (int y = Ap.y; y <= Bp.y; y++)
+        {
+            enemyBoard[x][y] = 9;
+        }
+    }
+    for (int x = A.x; x <= B.x; x++)
+    {
+        for (int y = A.y; y <= B.y; y++)
+        {
+            enemyBoard[x][y] = 1;
+            //ship_nr[x][y] = n + 1;
+        }
+    }
+
+    /*int val[] = { 0,1,0,-1,0 };
     for (int i = 0; i < 4; i++)
     {
         Point B = A;
         if (player == 1)
         {
-            while (playerBoard[B.x][B.y] == 2)
+            while (playerBoard[B.x][B.y] == 2 || playerBoard[B.x][B.y] == 3)
             {
                 playerBoard[B.x][B.y] = 3;
                 B.x += val[i];
                 B.y += val[i + 1];
                 if (!cordsOnBoard(B))
-                    break;      
+                    break;
             }
         }
         else
         {
-            while (enemyBoard[B.x][B.y] == 2)
+            while (enemyBoard[B.x][B.y] == 2 || playerBoard[B.x][B.y] == 3)
             {
                 enemyBoard[B.x][B.y] = 3;
                 B.x += val[i];
@@ -313,7 +412,7 @@ void GameState::updateSank(Point A, int player)
                     break;
             }
         }
-    }
+    }*/
 }
 
 
@@ -328,9 +427,10 @@ bool GameState::updatePlayerBoard(Point A)
         break;
     case 1:
         playerBoard[A.x][A.y] = 2;
+        ship_hit = true;
         if (checkSank(A, 1))
         {
-            updateSank(A, 1);
+            ship_hit = false;
             know_dir = false;
         }   
         return true;
@@ -351,14 +451,34 @@ bool GameState::updateBotBoard(Point A)
         break;
     case 1:
         enemyBoard[A.x][A.y] = 2;
-        if (checkSank(A, 2))
-            updateSank(A, 2);
+        checkSank(A, 2);
         return true;
         break;
     //default:
     //    return false;
     //    break;
     }
+}
+
+bool GameState::guessingRules(Point A, int b)
+{
+    if (!cordsOnBoard(A))
+        return false;
+
+    int val[] = { 0,1,0,-1,0 };
+
+    if (b == 1) //1st guess
+    {
+        if (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4 || playerBoard[A.x][A.y] == 5)
+            return false;
+    }
+
+    else if (b == 2) //2nd and following guesses
+    {
+        if (playerBoard[A.x][A.y] == 5)
+            return false;
+    }
+    return true;
 }
 
 Point GameState::botGuess()
@@ -371,56 +491,75 @@ Point GameState::botGuess()
     //return A;
 
     Point A = prev_guess;
-    int val[] = { 0,1,0,-1,0,1,0,-1,0 };
+    int val[] = { 0,1,0,-1,0 };
 
-    if (A.x == -1 || playerBoard[A.x][A.y] == 3) //if bot didn't guess correctly before, or it is a first guess, or he sank the previous ship
+    if (!ship_hit) //if bot didn't guess correctly before, or it is a first guess, or he sank the previous ship
     {
         do {
             A.x = rand() % 10;
             A.y = rand() % 10;
-        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
+        } while (!guessingRules(A, 1));
+        //} while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
         if (playerBoard[A.x][A.y] == 1) //if the oncoming guess is going to hit the ship
             prev_guess = A;
         return A;
     }
 
-    for (int i = 0; i < 8; i++)
+    else
     {
-        A = prev_guess;
-        if (know_dir) //if bot already know in which direction is the ship positioned
+        if (know_dir) //if bot already knows in which direction is the ship positioned
         {
-            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2) //if this is a correct direction
+            for (int i = 0; i < 4; i++)
             {
-                while (playerBoard[A.x][A.y] == 2) //go in this direction until the checked file is not a hit ship
+                A = prev_guess;
+                if (cordsOnBoard(Point{ A.x + val[i], A.y + val[i + 1] }) && playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2) //if this is a correct direction
                 {
-                    A.x += val[i];
-                    A.y += val[i + 1];
-                }
-                if (!cordsOnBoard(A)) //if the bot tries to check outside the board, check another direction
-                    continue;
-                if (playerBoard[A.x][A.y] == 4) //if the oncoming guess is already checked and is a miss
-                {
-                    i++;
-                    continue;
-                }
-                else if (playerBoard[A.x][A.y] == 0)//if there is a free spot to check
-                {
-                    if (cordsOnBoard(Point{ A.x + val[i], A.y + val[i + 1] }))
+                    while (playerBoard[A.x][A.y] == 2) //go in this direction until the checked file is not a hit ship
                     {
-                        if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2 || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 3)
+                        A.x += val[i];
+                        A.y += val[i + 1];
+                    }
+                    //if (!cordsOnBoard(A))
+                    //    continue;
+                    //if (!guessingRules(A, 2)); //if the bot tries to check where he shouldn't
+                    if(!guessingRules(A,2))
+                        continue;
+                    if (playerBoard[A.x][A.y] == 4) //if the oncoming guess is already checked and is a miss
+                    {
+                        A.x -= val[i];
+                        A.y -= val[i + 1];
+                        while (playerBoard[A.x][A.y] == 2)
+                        {
+                            A.x -= val[i];
+                            A.y -= val[i + 1];
+                        }
+                        return A;
+                    }
+                    else if (playerBoard[A.x][A.y] == 0)//if there is a free spot to check
+                    {
+                        //if (guessingRules(A, 2))
+                        if(guessingRules(A,2))
+                            return A;
+                        else
                             continue;
-                    }      
-                    return A;
-                }  
-                else if (playerBoard[A.x][A.y] == 1) //if the oncoming guess is going to hit the ship
-                {
-                    //prev_guess = A;
-                    return A;
+                        //if (cordsOnBoard(Point{ A.x + val[i], A.y + val[i + 1] })) 
+                        //{
+                        //    if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2 || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 3)
+                        //        continue;
+                        //}      
+
+                    }
+                    else if (playerBoard[A.x][A.y] == 1) //if the oncoming guess is going to hit the ship
+                    {
+                        //prev_guess = A;
+                        return A;
+                    }
+
                 }
-                
+                else
+                    continue;
             }
-            else
-                continue;
+
         }
         else
         {
@@ -429,9 +568,10 @@ Point GameState::botGuess()
                 int z = rand() % 4;
                 A.x += val[z];
                 A.y += val[z + 1];
-                if (!cordsOnBoard(A)) //if the bot tries to check outside the board, check another direction
-                    continue;
-            } while (playerBoard[A.x][A.y] == 4);
+                //    if (!cordsOnBoard(A)) //if the bot tries to check outside the board, check another direction
+                //        continue;
+                //} while (playerBoard[A.x][A.y] == 4);
+            } while (!guessingRules(A, 2));
             if (playerBoard[A.x][A.y] == 1)
                 know_dir = true;
             return A;
@@ -517,7 +657,7 @@ void GameState::update() //main game loop
     {
         //coords of mouse pos on grid
         if (A.x != -1)
-        { 
+        {
             //player move
             if (this->updateBotBoard(A))
                 player_move = true;
@@ -528,7 +668,7 @@ void GameState::update() //main game loop
     }
     else
     {
-        sf::sleep(sf::milliseconds(1000));
+        //sf::sleep(sf::milliseconds(1000));
         //bot move
         B = this->botGuess();
         if (this->updatePlayerBoard(B))

@@ -61,11 +61,15 @@ public:
     Point botGuess();
     Point A;
     Point B;
+    Point Begin, End;
     bool know_dir;
+    bool ship_hit;
     int checkWin();
     bool checkSank(Point, int);
-    void updateSank(Point, int);
+    void updateSank(int);
     bool cordsOnBoard(Point);
+    bool guessingRules(Point, int);
+    void sAB(Point& A, Point& B);
     // Render
     void renderText(sf::RenderTarget& target);
     void renderGrids(sf::RenderTarget* target = nullptr);
