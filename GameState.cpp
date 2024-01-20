@@ -150,7 +150,6 @@ GameState::~GameState()
 }
 
 // Functions
-
 void GameState::endState()
 {
     std::cout << "Ending GameState!" << "\n";
