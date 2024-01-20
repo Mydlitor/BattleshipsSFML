@@ -27,8 +27,10 @@ private:
     sf::Text enemyTitleText;
 
     // Game objects
-    std::vector<std::vector<Field*>> playerGrid;
-    std::vector<std::vector<Field*>> enemyGrid;
+    Field *playerGrid[10][10];
+    Field *enemyGrid[10][10];
+    //std::vector<std::vector<Field*>> playerGrid;
+    //std::vector<std::vector<Field*>> enemyGrid;
 
     // Result bar
     //ResultBar resultBar;
@@ -51,11 +53,20 @@ public:
     void updateGrids();
     void update();
 
+    bool updatePlayerBoard(Point A);
+    bool updateBotBoard(Point A);
+
+    bool player_move = true;
+    Point prev_guess;
+    Point botGuess();
+    Point A;
+    Point B;
+
     // Render
     void renderText(sf::RenderTarget& target);
     void renderGrids(sf::RenderTarget* target = nullptr);
     void render(sf::RenderTarget* target = nullptr);
 
-    void test();
+    void consoleDebug();
 };
 

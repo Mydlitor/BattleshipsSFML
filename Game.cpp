@@ -118,6 +118,7 @@ void Game::run()
 {
     while (this->window->isOpen())
     {
+        this->render();
         this->update();
         this->render();
     }

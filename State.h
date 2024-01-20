@@ -4,6 +4,7 @@
 #include <vector>
 #include <stack>
 #include <map>
+//#include <windows.h>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
@@ -24,8 +25,7 @@ protected:
 	// Variables
 	sf::RenderWindow* window;
 	std::stack<State*>* states;
-	int** playerBoard;
-	int** enemyBoard;
+	
 	bool quit;
 
 	// Mouse
@@ -55,7 +55,8 @@ protected:
 	virtual void initAudio();
 
 public:
-	
+	int** playerBoard;
+	int** enemyBoard;
 
 	//friend ShipPlacementState;
 

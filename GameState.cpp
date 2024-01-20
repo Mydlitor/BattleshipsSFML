@@ -7,6 +7,11 @@ void GameState::initVariables()
     this->enemyGridStartPosition = sf::Vector2f(1000.f, 250.f);
     this->gridSize = 10;
     this->fieldSize = 40.f;
+    this->player_move = true;
+    this->A.x = -1;
+    this->A.y = -1;
+    this->prev_guess.x = -1;
+    this->prev_guess.y = -1;
 }
 
 void GameState::initText()
@@ -57,38 +62,60 @@ void GameState::initText()
 }
 
 void GameState::initGrids() {
+    //for (int i = 0; i < 10; i++)
+    //{
+    //    for (int j = 0; j < 10; j++)
+    //    {
+    //        playerGrid = new Field[10]
+    //    }
+    //}
     for (int i = 0; i < this->gridSize; ++i)
     {
-        std::vector<Field*> p_row;
-        std::vector<Field*> e_row;
+        //std::vector<Field*> p_row;
+        //std::vector<Field*> e_row;
 
         for (int j = 0; j < this->gridSize; ++j)
         {
             // Initialize player' grid
-            p_row.push_back(new Field(
-                i, j,
+            this->playerGrid[i][j] = new Field(i, j,
                 this->playerGridStartPosition.x,
                 this->playerGridStartPosition.y,
                 this->fieldSize,
                 false,
-                sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), 
-                sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-            ));
+                sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+                sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230));
 
-            // Initialize enemy's grid
-            e_row.push_back(new Field(
-                i, j,
+            this->enemyGrid[i][j] = new Field(i, j,
                 this->enemyGridStartPosition.x,
                 this->enemyGridStartPosition.y,
                 this->fieldSize,
                 true,
-                sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), 
-                sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-            ));
+                sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+                sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230));
+            //p_row.push_back(new Field(
+            //    i, j,
+            //    this->playerGridStartPosition.x,
+            //    this->playerGridStartPosition.y,
+            //    this->fieldSize,
+            //    false,
+            //    sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), 
+            //    sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+            //));
+            //
+            //// Initialize enemy's grid
+            //e_row.push_back(new Field(
+            //    i, j,
+            //    this->enemyGridStartPosition.x,
+            //    this->enemyGridStartPosition.y,
+            //    this->fieldSize,
+            //    true,
+            //    sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), 
+            //    sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+            //));
         }
 
-        this->playerGrid.push_back(p_row);
-        this->enemyGrid.push_back(e_row);
+        //this->playerGrid.push_back(p_row);
+        //this->enemyGrid.push_back(e_row);
     }
 }
 
@@ -131,7 +158,7 @@ void GameState::updateInput()
     this->checkForQuit();
 }
 
-Point GameState::updateMousePosGrid()
+Point GameState::updateMousePosGrid() //to jest git
 {
     Point A{ 0,0 };
     if (this->mousePosView.x >= this->enemyGridStartPosition.x && this->mousePosView.x <= this->enemyGridStartPosition.x + 400.f
@@ -139,22 +166,55 @@ Point GameState::updateMousePosGrid()
     {
         this->mousePosGrid.y = static_cast<int>((this->mousePosView.x - this->enemyGridStartPosition.x) / this->fieldSize);
         this->mousePosGrid.x = static_cast<int>((this->mousePosView.y - this->enemyGridStartPosition.y) / this->fieldSize);
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
+        //if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+        //{
             A.x = mousePosGrid.x;
             A.y = mousePosGrid.y;
-            if (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1)
+            //if (A.x >= 0 && A.x <= 9 && A.y >= 0 && A.y <= 9)
+            //{
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1))
                 return A;
-        }
+            else
+            {
+                A.x = -1;
+                A.y = -1;
+                return A;
+            }
+
+            //if (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1)
+            //{
+            //    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            //        return A;
+            //}       
+            //else
+            //{
+            //    A.x = -1;
+            //    A.y = -1;
+            //    return A;
+            //}
+            //}
+            //else
+            //{
+            //    this->mousePosGrid.y = -1;
+            //    this->mousePosGrid.x = -1;
+            //    A.x = -1;
+            //    A.y = -1;
+            //    return A;
+            //}
+            
+        //}
     }
     else
     {
-        this->mousePosGrid.y = -1;
-        this->mousePosGrid.x = -1;
+        //this->mousePosGrid.y = -1;
+        //this->mousePosGrid.x = -1;
+        A.x = -1;
+        A.y = -1;
+        return A;
     }
 }
 
-void GameState::updateGrids() //ruch gracza
+void GameState::updateGrids() //update grida //dobrze
 {
     for (int i = 0; i < this->gridSize; ++i)
     {
@@ -162,32 +222,122 @@ void GameState::updateGrids() //ruch gracza
         {
             this->playerGrid[i][j]->update(this->playerBoard[i][j]);
             this->enemyGrid[i][j]->update(this->enemyBoard[i][j]);
+            if(this->enemyBoard[i][j]!=0&& this->enemyBoard[i][j]!=1)
+                this->enemyGrid[A.x][A.y]->reveal();
+            //if (this->enemyGrid[i][j]->isHidden() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->enemyGrid[i][j]->isMouseOverShape(mousePosView))
+            //{
+            //    
+            //    if (this->enemyBoard[i][j] == 0) this->enemyBoard[i][j] = 4;
+            //    else if (this->enemyBoard[i][j] == 1)
+            //    {
+            //        this->enemyBoard[i][j] = 2;
+            //        this->hitSound.play();
+            //    }
 
-            if (this->enemyGrid[i][j]->isHidden() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->enemyGrid[i][j]->isMouseOverShape(mousePosView))
-            {
-                
-                if (this->enemyBoard[i][j] == 0) this->enemyBoard[i][j] = 4;
-                else if (this->enemyBoard[i][j] == 1)
-                {
-                    this->enemyBoard[i][j] = 2;
-                    this->hitSound.play();
-                }
-
-                this->enemyGrid[i][j]->reveal();
-                this->enemyGrid[i][j]->update(this->enemyBoard[i][j]);
-                //bool player_made_move = 1;
-            }
+            //    this->enemyGrid[i][j]->reveal();
+            //    this->enemyGrid[i][j]->update(this->enemyBoard[i][j]);
+            //    //bool player_made_move = 1;
+            //}
         }
     }
 }
 
-void GameState::update()
+bool GameState::updatePlayerBoard(Point A)
 {
-    this->updateMousePositions();
-    this->updateMousePosGrid();
-    this->updateInput();
-    this->updateGrids();
+    //Sleep(1000);
+    switch (playerBoard[A.x][A.y])
+    {
+    case 0:
+        playerBoard[A.x][A.y] = 4;
+        return false;
+        break;
+    case 1:
+        playerBoard[A.x][A.y] = 2;
+        //dopisac sprawdzanie zatopienia statku
+        return true;
+        break;
+    //default:
+    //    return false;
+    //    break;
+    }
 }
+
+bool GameState::updateBotBoard(Point A)
+{
+    switch (enemyBoard[A.x][A.y])
+    {
+    case 0:
+        enemyBoard[A.x][A.y] = 4;
+        return false;
+        break;
+    case 1:
+        enemyBoard[A.x][A.y] = 2;
+        //dopisac sprawdzanie zatopienia statku
+        return true;
+        break;
+    default:
+        return false;
+        break;
+    }
+    //if (enemyBoard[A.x][A.y] = 0)
+    //{
+    //    enemyBoard[A.x][A.y] = 4;
+    //    return false;
+    //}
+    //else if (enemyBoard[A.x][A.y] = 1)
+    //{
+    //    enemyBoard[A.x][A.y] = 2;
+    //    this->enemyGrid[A.x][A.y]->reveal();
+    //    //dopisac sprawdzanie zatopienia statku
+    //    return true;
+    //}
+}
+
+void GameState::update() //main game loop
+{
+    /*for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            this->enemyGrid[i][j]->reveal();
+        }
+    }*/
+    //A.x = -1;
+
+    this->updateMousePositions();
+    A = this->updateMousePosGrid();
+    //this->updateMousePositions();
+    //this->updateMousePosGrid();
+    //sf::sleep(sf::milliseconds(1000));
+    if (player_move)
+    {
+        //coords of mouse pos on grid
+        if (A.x != -1)
+        { 
+            //player move
+            if (this->updateBotBoard(A))
+                player_move = true;
+            else
+                player_move = false;
+            this->enemyGrid[A.x][A.y]->reveal();
+        }
+    }
+    else
+    {
+        sf::sleep(sf::milliseconds(1000));
+        //bot move
+        B = this->botGuess();
+        if (this->updatePlayerBoard(B))
+            player_move = false;
+        else
+            player_move = true;
+    }
+    this->updateGrids();
+
+    this->updateInput();
+    //consoleDebug();
+}
+
 
 void GameState::renderText(sf::RenderTarget& target)
 {
@@ -251,6 +401,89 @@ void GameState::render(sf::RenderTarget* target)
     this->renderGrids(target);
 
     this->window->display();
+}
+
+void GameState::consoleDebug()
+{
+    std::cout << "Player move: " << player_move << "\nA: " << A.x << "," << A.y << "\n\n";
+    sf::sleep(sf::milliseconds(1000));
+}
+
+Point GameState::botGuess()
+{
+    //Point A{ 0,0 };
+    //do {
+    //    A.x = rand() % 10;
+    //    A.y = rand() % 10;
+    //} while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
+    //return A;
+
+    bool know_dir = 0;
+    Point A = prev_guess;
+    int val[] = { 0,1,0,-1,0 };
+    if (A.x == -1 || playerBoard[A.x][A.y] == 3) //jesli strzela po raz pierwszy, lub zatopil poprzedni statek
+    {
+        do {
+            A.x = rand() % 10;
+            A.y = rand() % 10;
+        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
+        if (playerBoard[A.x][A.y] == 1) //jesli strzal bedzie oddany w statek
+            prev_guess = A;
+        return A;
+    }
+    else if (playerBoard[A.x][A.y] == 2) //jesli poprzedni strzal zostal oddany w statek
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
+                || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
+            {
+                continue;
+            }
+            Point A = prev_guess;
+            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2)//jesli znalazl kierunek w jakim ustawiony jest statek
+            {
+                know_dir = true;
+                //A.x += val[i];
+                //A.y += val[i + 1];
+                do {    //szukaj kolejnego nietrafionego jeszcze w tym kierunku
+                    A.x += val[i];
+                    A.y += val[i + 1];
+
+                    //jesli kolejny punkt do sprawdzenia bedzie lezal poza plansza
+                    //lub strzelil juz w tym kierunku i nie trafil zmien zwrot
+                    if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
+                        || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
+                    {
+                        i++;
+                        continue;
+                    }
+                } while (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2);
+
+                if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 1) //jesli strzal ten bedzie w statek, ustaw prev_guess na ten punkt
+                {
+                    prev_guess.x = A.x + val[i];
+                    prev_guess.y = A.y + val[i + 1];
+                    return A;
+                }
+                else if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 0)
+                {
+                    prev_guess = A;
+                    return A;
+                }
+            }
+        }
+        if (!know_dir) //jesli nie znalazl jeszcze kierunku statku
+        {
+            do { //strzelanie dopoki nie trafi drugiego kawalka statku
+                A = prev_guess;
+                int i = rand() % 4;
+                A.x += val[i];
+                A.y += val[i + 1];
+            } while (playerBoard[A.x][A.y] == 4);
+            return A;
+        }
+    }
 }
 
 //zupelny prototyp
