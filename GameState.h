@@ -61,6 +61,7 @@ public:
     Point botGuess();
     Point A;
     Point B;
+    int checkWin();
 
     // Render
     void renderText(sf::RenderTarget& target);

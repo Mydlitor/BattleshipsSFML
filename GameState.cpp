@@ -486,6 +486,34 @@ Point GameState::botGuess()
     }
 }
 
+int GameState::checkWin()
+{
+    int a = 0;
+    //0- nobody won yet
+    //1- player won
+    //2- bot won
+    for (int i = 0; i < 10; i++) //player
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (enemyBoard[i][j] == 3)
+                a++;
+        }
+    }
+    if (a == 17) return 1;
+    a = 0;
+    for (int i = 0; i < 10; i++) //bot
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (playerBoard[i][j] == 3)
+                a++;
+        }
+    }
+    if (a == 17) return 2;
+    return 0;
+}
+
 //zupelny prototyp
 //int round = 0;
 //Point A{ 0,0 };
