@@ -61,8 +61,8 @@ public:
     Point botGuess();
     Point A;
     Point B;
-    Point Begin, End;
-    bool know_dir;
+    
+    int dir;
     bool ship_hit;
     int checkWin();
     bool checkSank(Point, int);
