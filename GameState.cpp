@@ -12,6 +12,7 @@ void GameState::initVariables()
     this->A.y = -1;
     this->prev_guess.x = -1;
     this->prev_guess.y = -1;
+    this->know_dir = false;
 }
 
 void GameState::initText()
@@ -148,6 +149,7 @@ GameState::~GameState()
 }
 
 // Functions
+
 void GameState::endState()
 {
     std::cout << "Ending GameState!" << "\n";
@@ -242,9 +244,82 @@ void GameState::updateGrids() //update grida //dobrze
     }
 }
 
+bool GameState::cordsOnBoard(Point A)
+{
+    if (A.x < 0 || A.x > 9 || A.y < 0 || A.y > 9)
+        return false;
+    return true;
+}
+
+bool GameState::checkSank(Point A, int player) //1-player  2-bot
+{
+    int val[] = { 0,1,0,-1,0 };
+    for (int i = 0; i < 4; i++)
+    {
+        Point B = A;
+        if (player == 1)
+        {
+            while (playerBoard[B.x][B.y] == 2) 
+            {
+                B.x += val[i];
+                B.y += val[i + 1];
+                if (!cordsOnBoard(B))
+                    break;
+                if (playerBoard[B.x][B.y] == 1)
+                    return false;
+            }
+        }
+        else
+        {
+            while (enemyBoard[B.x][B.y] == 2)
+            {
+                B.x += val[i];
+                B.y += val[i + 1];
+                if (!cordsOnBoard(B))
+                    break;
+                if (enemyBoard[B.x][B.y] == 1)
+                    return false;
+            }
+        }
+    }
+    return true;
+}
+
+void GameState::updateSank(Point A, int player)
+{
+    int val[] = { 0,1,0,-1,0 };
+    for (int i = 0; i < 4; i++)
+    {
+        Point B = A;
+        if (player == 1)
+        {
+            while (playerBoard[B.x][B.y] == 2)
+            {
+                playerBoard[B.x][B.y] = 3;
+                B.x += val[i];
+                B.y += val[i + 1];
+                if (!cordsOnBoard(B))
+                    break;      
+            }
+        }
+        else
+        {
+            while (enemyBoard[B.x][B.y] == 2)
+            {
+                enemyBoard[B.x][B.y] = 3;
+                B.x += val[i];
+                B.y += val[i + 1];
+                if (!cordsOnBoard(B))
+                    break;
+            }
+        }
+    }
+}
+
+
+
 bool GameState::updatePlayerBoard(Point A)
 {
-    //Sleep(1000);
     switch (playerBoard[A.x][A.y])
     {
     case 0:
@@ -253,7 +328,11 @@ bool GameState::updatePlayerBoard(Point A)
         break;
     case 1:
         playerBoard[A.x][A.y] = 2;
-        //dopisac sprawdzanie zatopienia statku
+        if (checkSank(A, 1))
+        {
+            updateSank(A, 1);
+            know_dir = false;
+        }   
         return true;
         break;
     //default:
@@ -272,26 +351,151 @@ bool GameState::updateBotBoard(Point A)
         break;
     case 1:
         enemyBoard[A.x][A.y] = 2;
-        //dopisac sprawdzanie zatopienia statku
+        if (checkSank(A, 2))
+            updateSank(A, 2);
         return true;
         break;
-    default:
-        return false;
-        break;
-    }
-    //if (enemyBoard[A.x][A.y] = 0)
-    //{
-    //    enemyBoard[A.x][A.y] = 4;
+    //default:
     //    return false;
-    //}
-    //else if (enemyBoard[A.x][A.y] = 1)
+    //    break;
+    }
+}
+
+Point GameState::botGuess()
+{
+    //Point A{ 0,0 };
+    //do {
+    //    A.x = rand() % 10;
+    //    A.y = rand() % 10;
+    //} while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
+    //return A;
+
+    Point A = prev_guess;
+    int val[] = { 0,1,0,-1,0,1,0,-1,0 };
+
+    if (A.x == -1 || playerBoard[A.x][A.y] == 3) //if bot didn't guess correctly before, or it is a first guess, or he sank the previous ship
+    {
+        do {
+            A.x = rand() % 10;
+            A.y = rand() % 10;
+        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
+        if (playerBoard[A.x][A.y] == 1) //if the oncoming guess is going to hit the ship
+            prev_guess = A;
+        return A;
+    }
+
+    for (int i = 0; i < 8; i++)
+    {
+        A = prev_guess;
+        if (know_dir) //if bot already know in which direction is the ship positioned
+        {
+            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2) //if this is a correct direction
+            {
+                while (playerBoard[A.x][A.y] == 2) //go in this direction until the checked file is not a hit ship
+                {
+                    A.x += val[i];
+                    A.y += val[i + 1];
+                }
+                if (!cordsOnBoard(A)) //if the bot tries to check outside the board, check another direction
+                    continue;
+                if (playerBoard[A.x][A.y] == 4) //if the oncoming guess is already checked and is a miss
+                {
+                    i++;
+                    continue;
+                }
+                else if (playerBoard[A.x][A.y] == 0)//if there is a free spot to check
+                {
+                    if (cordsOnBoard(Point{ A.x + val[i], A.y + val[i + 1] }))
+                    {
+                        if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2 || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 3)
+                            continue;
+                    }      
+                    return A;
+                }  
+                else if (playerBoard[A.x][A.y] == 1) //if the oncoming guess is going to hit the ship
+                {
+                    //prev_guess = A;
+                    return A;
+                }
+                
+            }
+            else
+                continue;
+        }
+        else
+        {
+            do { //strzelanie dopoki nie trafi drugiego kawalka statku
+                A = prev_guess;
+                int z = rand() % 4;
+                A.x += val[z];
+                A.y += val[z + 1];
+                if (!cordsOnBoard(A)) //if the bot tries to check outside the board, check another direction
+                    continue;
+            } while (playerBoard[A.x][A.y] == 4);
+            if (playerBoard[A.x][A.y] == 1)
+                know_dir = true;
+            return A;
+        }
+    }
+    //else if (playerBoard[A.x][A.y] == 2) //jesli poprzedni strzal zostal oddany w statek
     //{
-    //    enemyBoard[A.x][A.y] = 2;
-    //    this->enemyGrid[A.x][A.y]->reveal();
-    //    //dopisac sprawdzanie zatopienia statku
-    //    return true;
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        Point A = prev_guess;
+    //        if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
+    //            || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
+    //        {
+    //            continue;
+    //        }
+    //
+    //        if (!know_dir) //jesli nie znalazl jeszcze kierunku statku
+    //        {
+    //            do { //strzelanie dopoki nie trafi drugiego kawalka statku
+    //                A = prev_guess;
+    //                int z = rand() % 4;
+    //                A.x += val[z];
+    //                A.y += val[z + 1];
+    //            } while (playerBoard[A.x][A.y] == 4);
+    //            return A;
+    //        }
+    //
+    //        if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2)//jesli znalazl kierunek w jakim ustawiony jest statek
+    //        {
+    //            know_dir = true;
+    //            //A.x += val[i];
+    //            //A.y += val[i + 1];
+    //            do {    //szukaj kolejnego nietrafionego jeszcze w tym kierunku
+    //                A.x += val[i];
+    //                A.y += val[i + 1];
+    //
+    //                //jesli kolejny punkt do sprawdzenia bedzie lezal poza plansza
+    //                //lub strzelil juz w tym kierunku i nie trafil zmien zwrot
+    //                if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
+    //                    || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
+    //                {
+    //                    i++;
+    //                    continue;
+    //                }
+    //            } while (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2);
+    //
+    //            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 1) //jesli strzal ten bedzie w statek, ustaw prev_guess na ten punkt
+    //            {
+    //                prev_guess.x = A.x + val[i];
+    //                prev_guess.y = A.y + val[i + 1];
+    //                return A;
+    //            }
+    //            else if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 0)
+    //            {
+    //                prev_guess = A;
+    //                return A;
+    //            }
+    //        }
+    //    }
+    //    
     //}
 }
+
+
 
 void GameState::update() //main game loop
 {
@@ -409,83 +613,6 @@ void GameState::consoleDebug()
     sf::sleep(sf::milliseconds(1000));
 }
 
-Point GameState::botGuess()
-{
-    //Point A{ 0,0 };
-    //do {
-    //    A.x = rand() % 10;
-    //    A.y = rand() % 10;
-    //} while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
-    //return A;
-
-    bool know_dir = 0;
-    Point A = prev_guess;
-    int val[] = { 0,1,0,-1,0 };
-    if (A.x == -1 || playerBoard[A.x][A.y] == 3) //jesli strzela po raz pierwszy, lub zatopil poprzedni statek
-    {
-        do {
-            A.x = rand() % 10;
-            A.y = rand() % 10;
-        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
-        if (playerBoard[A.x][A.y] == 1) //jesli strzal bedzie oddany w statek
-            prev_guess = A;
-        return A;
-    }
-    else if (playerBoard[A.x][A.y] == 2) //jesli poprzedni strzal zostal oddany w statek
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
-                || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
-            {
-                continue;
-            }
-            Point A = prev_guess;
-            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2)//jesli znalazl kierunek w jakim ustawiony jest statek
-            {
-                know_dir = true;
-                //A.x += val[i];
-                //A.y += val[i + 1];
-                do {    //szukaj kolejnego nietrafionego jeszcze w tym kierunku
-                    A.x += val[i];
-                    A.y += val[i + 1];
-
-                    //jesli kolejny punkt do sprawdzenia bedzie lezal poza plansza
-                    //lub strzelil juz w tym kierunku i nie trafil zmien zwrot
-                    if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
-                        || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
-                    {
-                        i++;
-                        continue;
-                    }
-                } while (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2);
-
-                if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 1) //jesli strzal ten bedzie w statek, ustaw prev_guess na ten punkt
-                {
-                    prev_guess.x = A.x + val[i];
-                    prev_guess.y = A.y + val[i + 1];
-                    return A;
-                }
-                else if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 0)
-                {
-                    prev_guess = A;
-                    return A;
-                }
-            }
-        }
-        if (!know_dir) //jesli nie znalazl jeszcze kierunku statku
-        {
-            do { //strzelanie dopoki nie trafi drugiego kawalka statku
-                A = prev_guess;
-                int i = rand() % 4;
-                A.x += val[i];
-                A.y += val[i + 1];
-            } while (playerBoard[A.x][A.y] == 4);
-            return A;
-        }
-    }
-}
-
 int GameState::checkWin()
 {
     int a = 0;
@@ -513,6 +640,8 @@ int GameState::checkWin()
     if (a == 17) return 2;
     return 0;
 }
+
+
 
 //zupelny prototyp
 //int round = 0;

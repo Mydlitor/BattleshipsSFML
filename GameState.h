@@ -61,8 +61,11 @@ public:
     Point botGuess();
     Point A;
     Point B;
+    bool know_dir;
     int checkWin();
-
+    bool checkSank(Point, int);
+    void updateSank(Point, int);
+    bool cordsOnBoard(Point);
     // Render
     void renderText(sf::RenderTarget& target);
     void renderGrids(sf::RenderTarget* target = nullptr);
