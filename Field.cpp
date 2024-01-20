@@ -59,12 +59,12 @@ void Field::update(short unsigned fieldState)
 
 		case 2: // HIT
 			this->shape.setFillColor(this->shipColor);
-			setCross();
+			setCross(sf::Color::Red);
 			break;
 
 		case 3: // SANK
 			this->shape.setFillColor(this->sankColor);
-			setCross();
+			setCross(sf::Color::Red);
 			break;
 
 		case 4: // MISS
@@ -72,8 +72,9 @@ void Field::update(short unsigned fieldState)
 			setDot();
 			break;
 
-		case 9:
-			this->shape.setFillColor(sf::Color::Magenta);
+		case 5: // MISS
+			this->shape.setFillColor(this->missColor);
+			setCross(sf::Color::Black);
 			break;
 
 		default:
@@ -82,10 +83,10 @@ void Field::update(short unsigned fieldState)
 		}
 }
 
-void Field::setCross()
+void Field::setCross(sf::Color color)
 {
-	this->bar1.setFillColor(sf::Color::Red);
-	this->bar2.setFillColor(sf::Color::Red);
+	this->bar1.setFillColor(color);
+	this->bar2.setFillColor(color);
 }
 
 void Field::setDot()

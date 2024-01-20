@@ -40,7 +40,7 @@ public:
 	~Field();
 	
 	// Functions
-	void setCross();
+	void setCross(sf::Color);
 	void setDot();
 	void reveal();
 	void setHovered(bool isHovered);

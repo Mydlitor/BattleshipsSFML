@@ -61,6 +61,11 @@ void GameState::initText()
         this->enemyRowIndexes[i].setFillColor(sf::Color(37, 65, 99));
         this->enemyRowIndexes[i].setPosition({ this->enemyGridStartPosition.x - 30.f, this->enemyGridStartPosition.y + 5.f + i * this->fieldSize });
     }
+
+    // Legend text
+    this->legendText = sf::Text("Legend", this->font1, 30);
+    this->legendText.setFillColor(sf::Color(37, 65, 99));
+    this->legendText.setPosition(this->playerGridStartPosition.x, this->playerGridStartPosition.y + 450.f);
 }
 
 void GameState::initGrids() {
@@ -121,6 +126,69 @@ void GameState::initGrids() {
     }
 }
 
+void GameState::initLegend()
+{
+    this->legendFields["EMPTY_FIELD"] = new Field(0, 0,
+        this->playerGridStartPosition.x,
+        this->playerGridStartPosition.y + 500.f,
+        this->fieldSize,
+        false,
+        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    );
+
+    this->legendFields["SHIP_FIELD"] = new Field(0, 0,
+        this->playerGridStartPosition.x,
+        this->playerGridStartPosition.y + 550.f,
+        this->fieldSize,
+        false,
+        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    );
+
+    this->legendFields["HIT_FIELD"] = new Field(0, 0,
+        this->playerGridStartPosition.x,
+        this->playerGridStartPosition.y + 600.f,
+        this->fieldSize,
+        false,
+        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    );
+
+    this->legendFields["SANK_FIELD"] = new Field(0, 0,
+        this->playerGridStartPosition.x,
+        this->playerGridStartPosition.y + 650.f,
+        this->fieldSize,
+        false,
+        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    );
+
+    this->legendFields["MISS_FIELD"] = new Field(0, 0,
+        this->playerGridStartPosition.x,
+        this->playerGridStartPosition.y + 700.f,
+        this->fieldSize,
+        false,
+        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    );
+
+    this->legendFields["5_FIELD"] = new Field(0, 0,
+        this->playerGridStartPosition.x,
+        this->playerGridStartPosition.y + 700.f,
+        this->fieldSize,
+        false,
+        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    );
+
+    this->legendFields["SHIP_FIELD"]->update(1);
+    this->legendFields["HIT_FIELD"]->update(2);
+    this->legendFields["SANK_FIELD"]->update(3);
+    this->legendFields["MISS_FIELD"]->update(4);
+
+}
+
 // Constructors / Destructors
 GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard)
     : State(window, states, playerBoard, enemyBoard)/*, resultBar(*window)*/
@@ -129,6 +197,7 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, int**
     this->initAudio();
     this->initVariables();
     this->initText();
+    this->initLegend();
     this->initGrids();
 }
 
@@ -834,6 +903,17 @@ void GameState::renderText(sf::RenderTarget& target)
     {
         target.draw(index);
     }
+
+    // Legend text
+    target.draw(this->legendText);
+}
+
+void GameState::renderLegend(sf::RenderTarget* target)
+{
+    for (auto& field : this->legendFields)
+    {
+        field.second->render(target);
+    }
 }
 
 void GameState::renderGrids(sf::RenderTarget* target)
@@ -862,6 +942,8 @@ void GameState::render(sf::RenderTarget* target)
     this->window->clear(sf::Color(255, 255, 255));
 
     this->renderText(*this->window);
+
+    this->renderLegend(target);
 
     this->renderGrids(target);
 

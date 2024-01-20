@@ -25,12 +25,16 @@ private:
     std::vector<sf::Text> enemyColumnIndexes;
     sf::Text playerTitleText;
     sf::Text enemyTitleText;
+    sf::Text legendText;
 
     // Game objects
     Field *playerGrid[10][10];
     Field *enemyGrid[10][10];
     //std::vector<std::vector<Field*>> playerGrid;
     //std::vector<std::vector<Field*>> enemyGrid;
+
+    // Legend objects
+    std::map<std::string, Field*> legendFields;
 
     // Result bar
     //ResultBar resultBar;
@@ -39,6 +43,7 @@ private:
     void initVariables();
     void initText();
     void initGrids();
+    void initLegend();
 
 public:
     GameState(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard);
@@ -72,6 +77,7 @@ public:
     void sAB(Point& A, Point& B);
     // Render
     void renderText(sf::RenderTarget& target);
+    void renderLegend(sf::RenderTarget* target);
     void renderGrids(sf::RenderTarget* target = nullptr);
     void render(sf::RenderTarget* target = nullptr);
 
