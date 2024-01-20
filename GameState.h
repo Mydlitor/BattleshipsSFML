@@ -70,6 +70,7 @@ public:
     bool cordsOnBoard(Point);
     bool guessingRules(Point, int);
     void sAB(Point& A, Point& B);
+    int winCondition();
     // Render
     void renderText(sf::RenderTarget& target);
     void renderGrids(sf::RenderTarget* target = nullptr);

@@ -257,6 +257,29 @@ void GameState::sAB(Point& A, Point& B)
     if (A.y > B.y) std::swap(A.y, B.y);
 }
 
+int GameState::winCondition()
+{
+    int a=0,b = 0;
+    //player win - 1
+    //bot win - 2
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            if (enemyBoard[i][j] == 3)
+                a++;
+            if (playerBoard[i][j] == 3)
+                b++;
+        }
+    }
+    if (a == 17)
+        return 1;
+    else if (b == 17)
+        return 2;
+    else
+        return 0;
+}
+
 bool GameState::checkSank(Point A, int player) //1-player  2-bot
 {
     int val[] = { 0,1,0,-1,0 };
