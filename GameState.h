@@ -66,7 +66,7 @@ public:
     Point botGuess();
     Point A;
     Point B;
-    
+    Point Begin, End;
     int dir;
     bool ship_hit;
     int checkWin();
@@ -75,6 +75,7 @@ public:
     bool cordsOnBoard(Point);
     bool guessingRules(Point, int);
     void sAB(Point& A, Point& B);
+    int winCondition();
     // Render
     void renderText(sf::RenderTarget& target);
     void renderLegend(sf::RenderTarget* target);

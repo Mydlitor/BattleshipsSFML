@@ -153,7 +153,7 @@ void ShipPlacementState::playerClearPlane()
     {
         for (int j = 0; j < 10; j++)
         {
-            if (playerBoard[i][j] == 9)
+            if (playerBoard[i][j] == 5)
                 playerBoard[i][j] = 0;
         }
     }
@@ -167,12 +167,6 @@ bool ShipPlacementState::botCheckFreeSpace(Point A, Point B)
         {
             if (enemyBoard[x][y] != 0)
             {
-                //uncomment later
-                /*if (id == "player")
-                {
-                    cout << "\nToo close to another ship!!!\n";
-                    system("pause");
-                }*/
                 return false;
             }
         }
@@ -188,12 +182,6 @@ bool ShipPlacementState::playerCheckFreeSpace(Point A, Point B)
         {
             if (playerBoard[x][y] != 0)
             {
-                //uncomment later
-                /*if (id == "player")
-                {
-                    cout << "\nToo close to another ship!!!\n";
-                    system("pause");
-                }*/
                 return false;
             }
         }
@@ -221,7 +209,6 @@ void ShipPlacementState::botUpdatePlane(Point A, Point B)
         for (int y = A.y; y <= B.y; y++)
         {
             enemyBoard[x][y] = 1;
-            //ship_nr[x][y] = n + 1;
         }
     }
 }
@@ -238,7 +225,7 @@ void ShipPlacementState::playerUpdatePlane(Point A, Point B)
     {
         for (int y = Ap.y; y <= Bp.y; y++)
         {
-            playerBoard[x][y] = 9;
+            playerBoard[x][y] = 5;
         }
     }
     for (int x = A.x; x <= B.x; x++)
@@ -246,7 +233,6 @@ void ShipPlacementState::playerUpdatePlane(Point A, Point B)
         for (int y = A.y; y <= B.y; y++)
         {
             playerBoard[x][y] = 1;
-            //ship_nr[x][y] = n + 1;
         }
     }
 }
@@ -385,7 +371,7 @@ void ShipPlacementState::placeSelectedShip()
             {
                 for (int y = Ap.y; y <= Bp.y; y++)
                 {
-                    playerBoard[x][y] = 9;
+                    playerBoard[x][y] = 5;
                 }
             }
             for (int x = A.x; x <= B.x; x++)
