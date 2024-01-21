@@ -15,7 +15,7 @@ void GameState::initVariables()
     this->prev_guess.y = -1;
     this->dir = -1;
     this->ship_hit = false;
-    this->result = 2;
+    this->result;
 }
 
 void GameState::initText()
@@ -546,9 +546,9 @@ void GameState::update() //main game loop
     }
     this->updateGrids();
 
-
-    this->resultBar->update(mousePosView);
     this->updateButton();
+
+    this->result = checkWin();
 
     this->updateInput();
 }
@@ -642,6 +642,7 @@ void GameState::render(sf::RenderTarget* target)
 
     if (this->result != 0)
     {
+        this->resultBar->updateResult(this->result);
         this->renderResultBar(*this->window);
     }
         

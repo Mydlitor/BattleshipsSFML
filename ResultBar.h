@@ -24,6 +24,7 @@ public:
 	~ResultBar();
 
 	// Functions
+	void updateResult(int winner);
 	void update(const sf::Vector2f mousePos);
 	void render(sf::RenderTarget& target);
 };
