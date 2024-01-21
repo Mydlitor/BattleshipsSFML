@@ -2,7 +2,7 @@
 
 Button::Button(float x, float y, float width, float height, 
 	int fontSize, sf::Font* font, std::string text, 
-	sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor)
+	sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor, sf::Color textColor)
 {
 	this->buttonState = BTN_IDLE;
 
@@ -12,7 +12,7 @@ Button::Button(float x, float y, float width, float height,
 	this->font = font;
 	this->text.setFont(*this->font);
 	this->text.setString(text);
-	this->text.setFillColor(sf::Color::White);
+	this->text.setFillColor(textColor);
 	this->text.setCharacterSize(fontSize);
 	this->text.setPosition(
 		this->shape.getPosition().x + (this->shape.getGlobalBounds().width / 2.f) - this->text.getGlobalBounds().width / 2.f,

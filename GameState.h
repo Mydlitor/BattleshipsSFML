@@ -1,7 +1,9 @@
 #pragma once
 
 #include "State.h"
+#include "MainMenuState.h"
 #include "Field.h"
+#include "Button.h"
 #include "ResultBar.h"
 
 class GameState :
@@ -40,6 +42,7 @@ private:
 
     // Result bar
     ResultBar* resultBar;
+    Button* backToMenuButton;
 
     // Private functions
     void initVariables();
@@ -59,6 +62,7 @@ public:
     void updateInput();
     Point updateMousePosGrid();
     void updateGrids();
+    void updateButton();
     void update();
 
     bool updatePlayerBoard(Point A);

@@ -15,7 +15,7 @@ void GameState::initVariables()
     this->prev_guess.y = -1;
     this->dir = -1;
     this->ship_hit = false;
-    this->result = 0;
+    this->result = 2;
 }
 
 void GameState::initText()
@@ -150,11 +150,14 @@ void GameState::initLegend()
 
 void GameState::initResultBar()
 {
-    this->resultBar = new ResultBar(
-        *this->window,
-        &this->font1,
-        this->result
-    );
+    this->resultBar = new ResultBar(*this->window, &this->font1, this->result);
+
+    this->backToMenuButton = new Button(
+        1500.f,
+        55.f,
+        250, 70,
+        30, &this->font1, "Back To Menu", 
+        sf::Color(5, 62, 127), sf::Color(4, 50, 102), sf::Color(0, 0, 180), sf::Color::White);
 }
 
 // Constructors / Destructors
@@ -193,6 +196,7 @@ GameState::~GameState()
     }
 
     delete this->resultBar;
+    delete this->backToMenuButton;
 }
 
 // Functions
@@ -485,6 +489,26 @@ bool GameState::updateBotBoard(Point A)
     }
 }
 
+void GameState::updateButton()
+{
+    this->backToMenuButton->update(this->mousePosView);
+
+    if (this->backToMenuButton->isPressed())
+    {
+        for (int i = 0; i < this->gridSize; i++)
+        {
+            for (int j = 0; j < this->gridSize; j++)
+            {
+                this->playerBoard[i][j] = 0;
+                this->playerGrid[i][j]->update(0);
+            }
+        }
+
+        this->selectSound.play();
+        this->states->push(new MainMenuState(this->window, this->states, this->playerBoard, this->enemyBoard));
+    }
+}
+
 bool GameState::guessingRules(Point A, int b)
 {
     if (!cordsOnBoard(A))
@@ -643,6 +667,10 @@ void GameState::update() //main game loop
     }
     this->updateGrids();
 
+
+    this->resultBar->update(mousePosView);
+    this->updateButton();
+
     this->updateInput();
 }
 
@@ -720,6 +748,7 @@ void GameState::renderGrids(sf::RenderTarget* target)
 void GameState::renderResultBar(sf::RenderTarget& target)
 {
     this->resultBar->render(target);
+    this->backToMenuButton->render(&target);
 }
 
 void GameState::render(sf::RenderTarget* target)
@@ -733,7 +762,10 @@ void GameState::render(sf::RenderTarget* target)
     this->renderGrids(target);
 
     if (this->result != 0)
+    {
         this->renderResultBar(*this->window);
+    }
+        
 
     this->window->display();
 }

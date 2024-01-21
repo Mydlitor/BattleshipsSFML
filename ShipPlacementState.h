@@ -3,6 +3,7 @@
 #include "GameState.h"
 #include "Ship.h"
 #include "Button.h"
+#include "Field.h"
 
 class ShipPlacementState :
     public State

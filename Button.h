@@ -22,9 +22,11 @@ private:
 	sf::Color idleColor;
 	sf::Color hoverColor;
 	sf::Color activeColor;
+	sf::Color textColor;
 
 public:
-	Button(float x, float y, float width, float height, int fontSize, sf::Font* font, std::string text, sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor);
+	Button(float x, float y, float width, float height, int fontSize, sf::Font* font, std::string text, 
+		sf::Color idleColor, sf::Color hoverColor, sf::Color activeColor, sf::Color textColor);
 	~Button();
 
 	// Accessors

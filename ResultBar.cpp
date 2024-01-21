@@ -33,7 +33,7 @@ ResultBar::ResultBar(sf::RenderWindow& window, sf::Font* font, int winner)
 
 ResultBar::~ResultBar()
 {
-
+	
 }
 
 void ResultBar::update(const sf::Vector2f mousePos)
@@ -45,5 +45,5 @@ void ResultBar::render(sf::RenderTarget& target)
 {
 	target.draw(this->background);
 	target.draw(this->container);
-	target.draw(this->text);
+	target.draw(this->text);	
 }

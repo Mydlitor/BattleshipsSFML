@@ -112,14 +112,14 @@ void ShipPlacementState::initButtons()
         this->playerGridStartPosition.y - 150.f,
         250, 70,
         30, &this->font1, "Start Game",
-        sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120));
+        sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120), sf::Color(255, 255, 255));
 
     this->buttons["RESET"] = new Button(
         this->playerGridStartPosition.x + 281.f,
         this->playerGridStartPosition.y + 420.f,
         120, 40,
         20, &this->font1, "Reset",
-        sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120));
+        sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120), sf::Color(255, 255, 255));
 }
 
 void ShipPlacementState::sAB(Point& A, Point& B)

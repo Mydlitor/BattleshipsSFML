@@ -32,14 +32,14 @@ void MainMenuState::initButtons()
 		this->window->getSize().y / 2.f - 70 / 2.f,
 		250, 70,
 		30, &this->font1, "Start Game",
-		sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120));
+		sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120), sf::Color(255, 255, 255));
 	
 	this->buttons["EXIT_STATE"] = new Button(
 		this->window->getSize().x / 2.f - 250 / 2.f,
 		this->window->getSize().y / 2.f + 100 / 2.f,
 		250, 70,
 		30, &this->font1, "Quit",
-		sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120));
+		sf::Color(8, 98, 201), sf::Color(5, 78, 161), sf::Color(4, 58, 120), sf::Color(255, 255, 255));
 }
 
 // Constructors / Destructors
