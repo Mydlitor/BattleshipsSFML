@@ -15,7 +15,9 @@ void State::initAudio()
 		!this->resetSoundBuffer.loadFromFile("assets\\audio\\reset.mp3") ||
 		!this->missSoundBuffer.loadFromFile("assets\\audio\\guess_sound.mp3") ||
 		!this->hitSoundBuffer.loadFromFile("assets\\audio\\hitsound.mp3") ||
-		!this->sinkSoundBuffer.loadFromFile("assets\\audio\\sink_sound.mp3")
+		!this->sinkSoundBuffer.loadFromFile("assets\\audio\\sink_sound.mp3") ||
+		!this->winSoundBuffer.loadFromFile("assets\\audio\\win_sound.mp3") ||
+		!this->loseSoundBuffer.loadFromFile("assets\\audio\\lose_sound.mp3")
 		)
 	{
 		std::cout << "ERROR::State::INITAUDIO::Failed to load audio!" << "\n";
@@ -27,6 +29,8 @@ void State::initAudio()
 	this->missSound.setBuffer(this->missSoundBuffer);
 	this->hitSound.setBuffer(this->hitSoundBuffer);
 	this->sinkSound.setBuffer(this->sinkSoundBuffer);
+	this->winSound.setBuffer(this->winSoundBuffer);
+	this->loseSound.setBuffer(this->loseSoundBuffer);
 }
 
 State::State(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard)

@@ -44,6 +44,8 @@ protected:
 	sf::SoundBuffer missSoundBuffer;
 	sf::SoundBuffer hitSoundBuffer;
 	sf::SoundBuffer sinkSoundBuffer;
+	sf::SoundBuffer winSoundBuffer;
+	sf::SoundBuffer loseSoundBuffer;
 
 	sf::Sound selectSound;
 	sf::Sound placingSound;
@@ -51,6 +53,8 @@ protected:
 	sf::Sound missSound;
 	sf::Sound hitSound;
 	sf::Sound sinkSound;
+	sf::Sound winSound;
+	sf::Sound loseSound;
 
 	// Functions
 	virtual void initFonts();

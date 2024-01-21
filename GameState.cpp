@@ -427,7 +427,7 @@ bool GameState::updateBotBoard(Point A)
 void GameState::updateButton()
 {
     this->backToMenuButton->update(this->mousePosView);
-
+    
     if (this->backToMenuButton->isPressed())
     {
         for (int i = 0; i < this->gridSize; i++)
@@ -578,6 +578,8 @@ void GameState::update() //main game loop
     }
     else
     {
+        if (result == 1) this->winSound.play();
+        else if (result == 2) this->loseSound.play();
         for (int i = 0; i < this->gridSize; i++)
         {
             for (int j = 0; j < this->gridSize; j++)
