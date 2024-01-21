@@ -24,21 +24,32 @@ void MainMenuState::initBackground()
 
 	this->iconSprite.setTexture(this->iconTexture);
 
-	//this->iconSprite.setPosition
-
+	this->iconSprite.setPosition(
+		this->window->getSize().x / 2.f - this->iconSprite.getGlobalBounds().width / 2.f,
+		this->window->getSize().y / 3.f - 250.f
+	);
 }
 
 void MainMenuState::initText()
 {
 	this->titleText = sf::Text("Battleship Game", this->font1, 80);
 	this->titleText.setFillColor(sf::Color(37, 65, 99));
-	this->titleText.setPosition(this->window->getSize().x / 2.f - this->titleText.getGlobalBounds().width / 2.f, this->window->getSize().y / 3.f);
+	this->titleText.setPosition(
+		this->window->getSize().x / 2.f - this->titleText.getGlobalBounds().width / 2.f, 
+		this->window->getSize().y / 3.f);
 
-	this->authorsNames = sf::Text("Created by Jakub Sputo & Kacper Strzesak", this->font2, 30);
+	this->createdBy = sf::Text("Created by", this->font2, 30);
+	this->createdBy.setFillColor(sf::Color(37, 65, 99));
+	this->createdBy.setPosition(
+		this->window->getSize().x / 2.f - this->createdBy.getGlobalBounds().width / 2.f,
+		this->window->getSize().y / 3.f + 350.f
+	);
+
+	this->authorsNames = sf::Text("Jakub Sputo & Kacper Strzesak", this->font2, 30);
 	this->authorsNames.setFillColor(sf::Color(37, 65, 99));
 	this->authorsNames.setPosition(
 		this->window->getSize().x / 2.f - this->authorsNames.getGlobalBounds().width / 2.f, 
-		this->window->getSize().y / 3.f + 350.f
+		this->window->getSize().y / 3.f + 390.f
 	);
 }
 
@@ -134,6 +145,7 @@ void MainMenuState::renderButtons(sf::RenderTarget* target)
 void MainMenuState::renderText(sf::RenderTarget& target)
 {
 	target.draw(this->titleText);
+	target.draw(this->createdBy);
 	target.draw(this->authorsNames);
 }
 

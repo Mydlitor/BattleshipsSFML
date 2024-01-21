@@ -16,6 +16,7 @@ private:
     // Text
     sf::Text titleText;
     sf::Text authorsNames;
+    sf::Text createdBy;
 
     // Menu buttons
     std::map<std::string, Button*> buttons;
