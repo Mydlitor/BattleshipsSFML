@@ -66,18 +66,8 @@ void GameState::initText()
 }
 
 void GameState::initGrids() {
-    //for (int i = 0; i < 10; i++)
-    //{
-    //    for (int j = 0; j < 10; j++)
-    //    {
-    //        playerGrid = new Field[10]
-    //    }
-    //}
     for (int i = 0; i < this->gridSize; ++i)
     {
-        //std::vector<Field*> p_row;
-        //std::vector<Field*> e_row;
-
         for (int j = 0; j < this->gridSize; ++j)
         {
             // Initialize player' grid
@@ -96,30 +86,7 @@ void GameState::initGrids() {
                 true,
                 sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
                 sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230));
-            //p_row.push_back(new Field(
-            //    i, j,
-            //    this->playerGridStartPosition.x,
-            //    this->playerGridStartPosition.y,
-            //    this->fieldSize,
-            //    false,
-            //    sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), 
-            //    sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-            //));
-            //
-            //// Initialize enemy's grid
-            //e_row.push_back(new Field(
-            //    i, j,
-            //    this->enemyGridStartPosition.x,
-            //    this->enemyGridStartPosition.y,
-            //    this->fieldSize,
-            //    true,
-            //    sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), 
-            //    sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-            //));
         }
-
-        //this->playerGrid.push_back(p_row);
-        //this->enemyGrid.push_back(e_row);
     }
 }
 
@@ -210,7 +177,7 @@ void GameState::updateInput()
     this->checkForQuit();
 }
 
-Point GameState::updateMousePosGrid() //to jest git
+Point GameState::updateMousePosGrid()
 {
     Point A{ 0,0 };
     if (this->mousePosView.x >= this->enemyGridStartPosition.x && this->mousePosView.x <= this->enemyGridStartPosition.x + 400.f
@@ -218,48 +185,20 @@ Point GameState::updateMousePosGrid() //to jest git
     {
         this->mousePosGrid.y = static_cast<int>((this->mousePosView.x - this->enemyGridStartPosition.x) / this->fieldSize);
         this->mousePosGrid.x = static_cast<int>((this->mousePosView.y - this->enemyGridStartPosition.y) / this->fieldSize);
-        //if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        //{
-            A.x = mousePosGrid.x;
-            A.y = mousePosGrid.y;
-            //if (A.x >= 0 && A.x <= 9 && A.y >= 0 && A.y <= 9)
-            //{
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1))
-                return A;
-            else
-            {
-                A.x = -1;
-                A.y = -1;
-                return A;
-            }
+        A.x = mousePosGrid.x;
+        A.y = mousePosGrid.y;
 
-            //if (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1)
-            //{
-            //    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            //        return A;
-            //}       
-            //else
-            //{
-            //    A.x = -1;
-            //    A.y = -1;
-            //    return A;
-            //}
-            //}
-            //else
-            //{
-            //    this->mousePosGrid.y = -1;
-            //    this->mousePosGrid.x = -1;
-            //    A.x = -1;
-            //    A.y = -1;
-            //    return A;
-            //}
-            
-        //}
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && (enemyBoard[A.x][A.y] == 0 || enemyBoard[A.x][A.y] == 1))
+            return A;
+        else
+        {
+            A.x = -1;
+            A.y = -1;
+            return A;
+        }
     }
     else
     {
-        //this->mousePosGrid.y = -1;
-        //this->mousePosGrid.x = -1;
         A.x = -1;
         A.y = -1;
         return A;
@@ -276,20 +215,6 @@ void GameState::updateGrids() //update grida //dobrze
             this->enemyGrid[i][j]->update(this->enemyBoard[i][j]);
             if(this->enemyBoard[i][j]!=0&& this->enemyBoard[i][j]!=1)
                 this->enemyGrid[A.x][A.y]->reveal();
-            //if (this->enemyGrid[i][j]->isHidden() && sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->enemyGrid[i][j]->isMouseOverShape(mousePosView))
-            //{
-            //    
-            //    if (this->enemyBoard[i][j] == 0) this->enemyBoard[i][j] = 4;
-            //    else if (this->enemyBoard[i][j] == 1)
-            //    {
-            //        this->enemyBoard[i][j] = 2;
-            //        this->hitSound.play();
-            //    }
-
-            //    this->enemyGrid[i][j]->reveal();
-            //    this->enemyGrid[i][j]->update(this->enemyBoard[i][j]);
-            //    //bool player_made_move = 1;
-            //}
         }
     }
 }
@@ -410,7 +335,7 @@ void GameState::updateSank(int player)
         {
             for (int y = Ap.y; y <= Bp.y; y++)
             {
-                playerBoard[x][y] = 5;
+                playerBoard[x][y] = 6;
             }
         }
         for (int x = A.x; x <= B.x; x++)
@@ -428,6 +353,7 @@ void GameState::updateSank(int player)
             for (int y = Ap.y; y <= Bp.y; y++)
             {
                 enemyBoard[x][y] = 5;
+                this->enemyGrid[x][y]->reveal();
             }
         }
         for (int x = A.x; x <= B.x; x++)
@@ -461,9 +387,9 @@ bool GameState::updatePlayerBoard(Point A)
         }   
         return true;
         break;
-    //default:
-    //    return false;
-    //    break;
+    default:
+        return false;
+        break;
     }
 }
 
@@ -483,9 +409,9 @@ bool GameState::updateBotBoard(Point A)
         }
         return true;
         break;
-    //default:
-    //    return false;
-    //    break;
+    default:
+        return false;
+        break;
     }
 }
 
@@ -518,13 +444,13 @@ bool GameState::guessingRules(Point A, int b)
 
     if (b == 1) //1st guess
     {
-        if (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4 || playerBoard[A.x][A.y] == 5)
+        if (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4 || playerBoard[A.x][A.y] == 6)
             return false;
     }
 
     else if (b == 2) //2nd and following guesses
     {
-        if (playerBoard[A.x][A.y] == 5 || playerBoard[A.x][A.y] == 4)
+        if (playerBoard[A.x][A.y] == 6 || playerBoard[A.x][A.y] == 4)
             return false;
     }
     return true;
@@ -572,53 +498,6 @@ Point GameState::botGuess()
             {
                 return A;
             }
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    A = prev_guess;
-            //    if (cordsOnBoard(Point{ A.x + val[i], A.y + val[i + 1] }) && playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2) //if this is a correct direction
-            //    {
-            //        while (playerBoard[A.x][A.y] == 2) //go in this direction until the checked file is not a hit ship
-            //        {
-            //            A.x += val[i];
-            //            A.y += val[i + 1];
-            //        }
-            //        //if (!cordsOnBoard(A))
-            //        //    continue;
-            //        //if (!guessingRules(A, 2)); //if the bot tries to check where he shouldn't
-            //        //if(!guessingRules(A,2))
-            //        //    continue;
-            //        if (guessingRules(A, 2) || playerBoard[A.x][A.y] == 4) //if the oncoming guess is already checked and is a miss
-            //        {
-            //            A = prev_guess;
-            //            do {
-            //                A.x -= val[i];
-            //                A.y -= val[i + 1];
-            //            } while (playerBoard[A.x][A.y] == 2);
-            //            return A;
-            //        }
-            //        else if (playerBoard[A.x][A.y] == 0)//if there is a free spot to check
-            //        {
-            //            //if (guessingRules(A, 2))
-            //            if(guessingRules(A,2))
-            //                return A;
-            //            else
-            //                continue;
-            //            //if (cordsOnBoard(Point{ A.x + val[i], A.y + val[i + 1] })) 
-            //            //{
-            //            //    if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2 || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 3)
-            //            //        continue;
-            //            //}                
-            //        }
-            //        else if (playerBoard[A.x][A.y] == 1) //if the oncoming guess is going to hit the ship
-            //        {
-            //            //prev_guess = A;
-            //            return A;
-            //        }
-            //    }
-            //    else
-            //        continue;
-            //}
-
         }
         else
         {
@@ -803,48 +682,3 @@ int GameState::checkWin()
     if (a == 17) return 2;
     return 0;
 }
-
-
-
-//zupelny prototyp
-//int round = 0;
-//Point A{ 0,0 };
-//while (player.shipcount > 0 && bot.shipcout > 0)
-//{
-//    if (round % 2 == 0)
-//    {
-//        //runda gracza
-//    }
-//    else
-//    {
-//        
-//        A = botGuess();
-//        if(updatePlayerBoard(A) {
-//            if (playerboard[A.x][A.y] == 0)
-//            {
-//                playerboard[A.x][A.y] = 4;
-//                return false;
-//            }
-//                
-//            else if (playerboard[A.x][A.y] == 1)
-//            {
-//                playerboard[A.x][A.y] = 2;
-//                return true;
-//            }
-//            else if (/*statek zatopiony*/)
-//            {
-//                playerboard[A.x][A.y] = 3; //bedzie trzeba jeszcze caly statek pozamieniac na 3
-//                return true;
-//            }
-//                
-//        })
-//            round++;
-//
-//        
-//        //runda bota
-//    }
-//}
-//if(player.shipcount==0)
-//    bot wins
-//else
-//    player wins
