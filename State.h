@@ -41,14 +41,16 @@ protected:
 	sf::SoundBuffer selectSoundBuffer;
 	sf::SoundBuffer placingSoundBuffer;
 	sf::SoundBuffer resetSoundBuffer;
-	sf::SoundBuffer errorSoundBuffer;
+	sf::SoundBuffer missSoundBuffer;
 	sf::SoundBuffer hitSoundBuffer;
+	sf::SoundBuffer sinkSoundBuffer;
 
 	sf::Sound selectSound;
 	sf::Sound placingSound;
 	sf::Sound resetSound;
-	sf::Sound errorSound;
+	sf::Sound missSound;
 	sf::Sound hitSound;
+	sf::Sound sinkSound;
 
 	// Functions
 	virtual void initFonts();
