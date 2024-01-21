@@ -93,4 +93,3 @@ public:
 
     void consoleDebug();
 };
-

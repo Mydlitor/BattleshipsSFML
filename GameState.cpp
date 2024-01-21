@@ -578,8 +578,6 @@ void GameState::update() //main game loop
     }
     else
     {
-        if (result == 1) this->winSound.play();
-        else if (result == 2) this->loseSound.play();
         for (int i = 0; i < this->gridSize; i++)
         {
             for (int j = 0; j < this->gridSize; j++)
@@ -589,7 +587,7 @@ void GameState::update() //main game loop
         }
         this->updateGrids();
     }
-
+    
     this->updateInput();
 
     this->updateButton();
@@ -712,7 +710,11 @@ int GameState::checkWin()
                 a++;
         }
     }
-    if (a == 17) return 1;
+    if (a == 17)
+    {
+        winSound.play();
+        return 1;
+    }
     a = 0;
     for (int i = 0; i < 10; i++) //bot
     {
@@ -722,6 +724,10 @@ int GameState::checkWin()
                 a++;
         }
     }
-    if (a == 17) return 2;
+    if (a == 17)
+    {
+        loseSound.play();
+        return 2;
+    }
     return 0;
 }
