@@ -68,7 +68,7 @@ MainMenuState::~MainMenuState()
 // Functions
 void MainMenuState::endState()
 {
-	std::cout << "Ending MainMenuState!" << "\n";
+	//std::cout << "Ending MainMenuState!" << "\n";
 }
 
 void MainMenuState::updateInput()

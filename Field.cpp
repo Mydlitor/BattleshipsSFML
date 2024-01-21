@@ -59,7 +59,7 @@ void Field::update(short unsigned fieldState)
 			break;
 
 		case 4: // MISS
-			this->shape.setFillColor(this->missColor);
+			this->shape.setFillColor(this->emptyColor);
 			setDot();
 			break;
 

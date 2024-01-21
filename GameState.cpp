@@ -553,7 +553,7 @@ void GameState::update() //main game loop
                 player_move = false;
             else
                 player_move = true;
-            sf::sleep(sf::milliseconds(1000));
+            sf::sleep(sf::milliseconds(750));
         }  
         this->updateGrids();
 
