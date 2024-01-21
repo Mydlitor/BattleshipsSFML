@@ -388,6 +388,7 @@ bool GameState::updatePlayerBoard(Point A)
         ship_hit = true;
         if (checkSank(A, 1))
         {
+            sinkSound.play();
             updateSank(1);
             ship_hit = false;
             dir = -1;
@@ -412,6 +413,7 @@ bool GameState::updateBotBoard(Point A)
         enemyBoard[A.x][A.y] = 2;
         if (checkSank(A, 2))
         {
+            sinkSound.play();
             updateSank(2);
         }
         return true;
@@ -538,22 +540,37 @@ void GameState::update() //main game loop
             if (A.x != -1)
             {
                 //player move
+                
                 if (this->updateBotBoard(A))
+                {
+                    this->hitSound.play();
                     player_move = true;
+                }         
                 else
+                {
+                    this->missSound.play();
                     player_move = false;
+                }
+                    
                 this->enemyGrid[A.x][A.y]->reveal();
             }
         }
         else
         {
             //bot move
+            sf::sleep(sf::milliseconds(750));
             B = this->botGuess();
             if (this->updatePlayerBoard(B))
+            {
+                this->hitSound.play();
                 player_move = false;
+            }  
             else
+            {
+                this->missSound.play();
                 player_move = true;
-            sf::sleep(sf::milliseconds(750));
+            }
+            
         }  
         this->updateGrids();
 
