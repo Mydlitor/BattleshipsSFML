@@ -8,8 +8,8 @@ void Game::initWindow()
     //this->videoMode.height = 1080;
     //this->videoMode.width = 1920;
     this->videoMode = sf::VideoMode::getDesktopMode();
-    this->window = new sf::RenderWindow(this->videoMode, "Battleship Game", sf::Style::Close);
-    //this->window = new sf::RenderWindow(this->videoMode, "Battleship Game", sf::Style::Fullscreen);
+    //this->window = new sf::RenderWindow(this->videoMode, "Battleship Game", sf::Style::Close);
+    this->window = new sf::RenderWindow(this->videoMode, "Battleship Game", sf::Style::Fullscreen);
     this->window->setFramerateLimit(165);
 }
 
