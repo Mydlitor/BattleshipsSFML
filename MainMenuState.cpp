@@ -24,7 +24,7 @@ void MainMenuState::initBackground()
 
 	this->iconSprite.setTexture(this->iconTexture);
 
-	//iconSprite.setPosition
+	//this->iconSprite.setPosition
 
 }
 
