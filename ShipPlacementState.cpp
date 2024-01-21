@@ -261,7 +261,6 @@ void ShipPlacementState::initEnemyBoard()
 
         botUpdatePlane(A, B);
 
-        //c_ships++;
     }
     botClearPlane();
 }
@@ -379,29 +378,8 @@ void ShipPlacementState::placeSelectedShip()
                 for (int y = A.y; y <= B.y; y++)
                 {
                     playerBoard[x][y] = 1;
-                    //ship_nr[x][y] = n + 1;
                 }
             }
-
-
-            //if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-            //{
-            //    // Set the ship in a vertical position
-            //    for (int i = 0; i < this->shipSizeInCells; ++i)
-            //    {
-            //        this->playerBoard[this->mousePosGrid.x + i][this->mousePosGrid.y] = 1;
-            //    }
-            //    this->placingSound.play();
-            //}
-            //else
-            //{
-            //    // Set the ship in a horizontal position
-            //    for (int i = 0; i < this->shipSizeInCells; ++i)
-            //    {
-            //        this->playerBoard[this->mousePosGrid.x][this->mousePosGrid.y + i] = 1;
-            //    }
-            //    this->placingSound.play();
-            //}
 
             this->selectedShip->setPlaced(SHIP_PLACED);
             this->selectedShip = nullptr;
@@ -412,9 +390,6 @@ void ShipPlacementState::placeSelectedShip()
 // Do poprawienia //juz nie
 bool ShipPlacementState::isValidPlacement(Point A, Point B)
 {
-    //if (this->mousePosGrid.y < 0 || this->mousePosGrid.y + this->shipSizeInCells > this->gridSize ||
-    //    this->mousePosGrid.x < 0 || this->mousePosGrid.x + this->shipSizeInCells > this->gridSize)
-
     if (this->mousePosGrid.y < 0 || this->mousePosGrid.y > 9 ||
         this->mousePosGrid.x < 0 || this->mousePosGrid.x > 9)
     {
@@ -424,67 +399,6 @@ bool ShipPlacementState::isValidPlacement(Point A, Point B)
     if (!CordsOnPlane(A) || !CordsOnPlane(B) || !playerCheckFreeSpace(A, B))
         return false;
     return true;
-
-    /* Check for collisions and adjacency
-    for (int i = -1; i <= this->shipSizeInCells; ++i)
-    {
-        for (int j = -1; j <= 1; ++j)
-        {
-            int checkRow = this->mousePosGrid.x + i;
-            int checkColumn = this->mousePosGrid.y + j;
-
-            if (checkRow >= 0 && checkRow < this->gridSize && checkColumn >= 0 && checkColumn < this->gridSize)
-            {
-                if (this->playerBoard[checkRow][checkColumn] != 0)
-                {
-                    return false; // Collision detected
-                }
-            }
-        }
-    }
-
-    // Check for adjacency of ships in the same row or column
-    for (int i = -1; i <= this->shipSizeInCells; ++i)
-    {
-        int checkRow = this->mousePosGrid.x + i;
-        int checkColumn = this->mousePosGrid.y - 1;
-
-        if (checkRow >= 0 && checkRow < this->gridSize && checkColumn >= 0 && checkColumn < this->gridSize &&
-            this->playerBoard[checkRow][checkColumn] != 0)
-        {
-            return false; // Adjacency detected to the left
-        }
-
-        checkColumn = this->mousePosGrid.y + this->shipSizeInCells;
-
-        if (checkRow >= 0 && checkRow < this->gridSize && checkColumn >= 0 && checkColumn < this->gridSize &&
-            this->playerBoard[checkRow][checkColumn] != 0)
-        {
-            return false; // Adjacency detected to the right
-        }
-    }
-
-    // Check for adjacency of ships in the same column
-    for (int j = -1; j <= 1; ++j)
-    {
-        int checkRow = this->mousePosGrid.x - 1;
-        int checkColumn = this->mousePosGrid.y + j;
-
-        if (checkRow >= 0 && checkRow < this->gridSize && checkColumn >= 0 && checkColumn < this->gridSize &&
-            this->playerBoard[checkRow][checkColumn] != 0)
-        {
-            return false; // Adjacency detected above
-        }
-
-        checkRow = this->mousePosGrid.x + this->shipSizeInCells;
-
-        if (checkRow >= 0 && checkRow < this->gridSize && checkColumn >= 0 && checkColumn < this->gridSize &&
-            this->playerBoard[checkRow][checkColumn] != 0)
-        {
-            return false; // Adjacency detected below
-        }
-    }*/
-
      // Valid placement
 }
 
@@ -528,7 +442,6 @@ bool ShipPlacementState::checkIfAllShipsArePlaced()
             return false; // If at least one ship is not placed yet, return false
         }
     }
-    //playerClearPlane();
     return true; // If all ships are placed, return true
 }
 
@@ -645,78 +558,3 @@ void ShipPlacementState::render(sf::RenderTarget* target)
 
     this->window->display();
 }
-
-//do innego state'a
-Point prev_guess{ 2,2 };
-//przy inicjalizacji prev_guess = {-1, -1};
-//potrzeba funkcji, ktora bedzie update'owac plansze gracza w zaleznosci od strzalu bota
-Point ShipPlacementState::botGuess()
-{
-    bool know_dir = 0;
-    Point A = prev_guess;
-    int val[] = { 0,1,0,-1,0 };
-    if (A.x == -1 || playerBoard[A.x][A.y] == 3) //jesli strzela po raz pierwszy, lub zatopil poprzedni statek
-    {
-        do {
-            A.x = rand() % 10;
-            A.y = rand() % 10;
-        } while (playerBoard[A.x][A.y] == 2 || playerBoard[A.x][A.y] == 3 || playerBoard[A.x][A.y] == 4);
-        if (playerBoard[A.x][A.y] == 1) //jesli strzal bedzie oddany w statek
-            prev_guess = A;
-        return A;
-    }
-    else if (playerBoard[A.x][A.y] == 2) //jesli poprzedni strzal zostal oddany w statek
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
-                || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
-            {
-                continue;
-            }
-            Point A = prev_guess;
-            if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2)//jesli znalazl kierunek w jakim ustawiony jest statek
-            {
-                know_dir = true;
-                //A.x += val[i];
-                //A.y += val[i + 1];
-                do {    //szukaj kolejnego nietrafionego jeszcze w tym kierunku
-                    A.x += val[i];
-                    A.y += val[i + 1];
-
-                    //jesli kolejny punkt do sprawdzenia bedzie lezal poza plansza
-                    //lub strzelil juz w tym kierunku i nie trafil zmien zwrot
-                    if (A.x + val[i] < 0 || A.x + val[i] > 9 || A.y + val[i + 1] < 0 || A.y + val[i + 1] > 9
-                        || playerBoard[A.x + val[i]][A.y + val[i + 1]] == 4)
-                    {
-                        i++;
-                        continue;
-                    }
-                } while (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 2);
-
-                if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 1) //jesli strzal ten bedzie w statek, ustaw prev_guess na ten punkt
-                {
-                    prev_guess.x = A.x + val[i];
-                    prev_guess.y = A.y + val[i + 1];
-                    return A;
-                }
-                else if (playerBoard[A.x + val[i]][A.y + val[i + 1]] == 0)
-                {
-                    prev_guess = A;
-                    return A;
-                }
-            }
-        }
-        if (!know_dir) //jesli nie znalazl jeszcze kierunku statku
-        {
-            do { //strzelanie dopoki nie trafi drugiego kawalka statku
-                A = prev_guess;
-                int i = rand() % 4;
-                A.x += val[i];
-                A.y += val[i + 1];
-            } while (playerBoard[A.x][A.y] == 4);
-            return A;
-        }
-    }
-}
-//zmiana w kodzie
