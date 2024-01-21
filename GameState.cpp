@@ -15,7 +15,7 @@ void GameState::initVariables()
     this->prev_guess.y = -1;
     this->dir = -1;
     this->ship_hit = false;
-    this->result;
+    this->result =0;
 }
 
 void GameState::initText()
@@ -161,6 +161,13 @@ GameState::~GameState()
     {
         delete field->second;
     }
+
+    for (int i = 0; i < 10; ++i) {
+        delete[] playerBoard[i];
+        delete[] enemyBoard[i];
+    }
+    delete[] playerBoard;
+    delete[] enemyBoard;
 
     delete this->resultBar;
     delete this->backToMenuButton;
@@ -427,9 +434,10 @@ void GameState::updateButton()
             {
                 this->playerBoard[i][j] = 0;
                 this->playerGrid[i][j]->update(0);
+                this->enemyBoard[i][j] = 0;
+                this->enemyGrid[i][j]->update(0);
             }
         }
-
         this->selectSound.play();
         this->states->push(new MainMenuState(this->window, this->states, this->playerBoard, this->enemyBoard));
     }
@@ -521,36 +529,40 @@ void GameState::update() //main game loop
 {
     this->updateMousePositions();
     A = this->updateMousePosGrid();
-    if (player_move)
+
+    if (result == 0)
     {
-        //coords of mouse pos on grid
-        if (A.x != -1)
+        if (player_move)
         {
-            //player move
-            if (this->updateBotBoard(A))
-                player_move = true;
-            else
-                player_move = false;
-            this->enemyGrid[A.x][A.y]->reveal();
+            //coords of mouse pos on grid
+            if (A.x != -1)
+            {
+                //player move
+                if (this->updateBotBoard(A))
+                    player_move = true;
+                else
+                    player_move = false;
+                this->enemyGrid[A.x][A.y]->reveal();
+            }
         }
-    }
-    else
-    {
-        //bot move
-        B = this->botGuess();
-        if (this->updatePlayerBoard(B))
-            player_move = false;
         else
-            player_move = true;
-        sf::sleep(sf::milliseconds(1000));
+        {
+            //bot move
+            B = this->botGuess();
+            if (this->updatePlayerBoard(B))
+                player_move = false;
+            else
+                player_move = true;
+            sf::sleep(sf::milliseconds(1000));
+        }  
+        this->updateGrids();
+
+        this->result = checkWin();
     }
-    this->updateGrids();
-
-    this->updateButton();
-
-    this->result = checkWin();
 
     this->updateInput();
+
+    this->updateButton();
 }
 
 
