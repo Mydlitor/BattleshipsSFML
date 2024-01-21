@@ -5,6 +5,10 @@ Field::Field(int x, int y, float offsetX, float offsetY, float size, bool status
 {
 	this->hidden = status;
 	this->crossLength = size;
+	this->x = x;
+	this->y = y;
+	this->offsetX = offsetX;
+	this->offsetY = offsetY;
 
 	// Shape
 	this->shape.setPosition(sf::Vector2f(y * size + offsetX, x * size + offsetY));
@@ -21,20 +25,6 @@ Field::Field(int x, int y, float offsetX, float offsetY, float size, bool status
 	// Shape border
 	this->shape.setOutlineColor(this->borderColor);
 	this->shape.setOutlineThickness(1.f);
-
-	// Cross
-	this->bar1.setPosition(sf::Vector2f(y * size + offsetX + 8.f, x * size + offsetY + 5.f));
-	this->bar1.setFillColor(sf::Color::Transparent);
-	this->bar1.setRotation(45);
-
-	this->bar2.setPosition(sf::Vector2f(y * size + offsetX + 5.f, x * size + offsetY + 32.f));
-	this->bar2.setFillColor(sf::Color::Transparent);
-	this->bar2.setRotation(-45);
-
-	// Dot
-	this->dot.setPosition(sf::Vector2f(y * size + offsetX + size / 2 - 8.f, x * size + offsetY + size / 2 - 8.f));
-	this->dot.setRadius(8);
-	this->dot.setFillColor(sf::Color::Transparent);
 }
 
 Field::~Field()
@@ -50,12 +40,12 @@ void Field::update(short unsigned fieldState)
 		{
 		case 0: // EMPTY
 			this->shape.setFillColor(this->emptyColor);
+			removeCross();
 			break;
 
 		case 1: // SHIP
 			this->shape.setFillColor(this->shipColor);
-			this->bar1.setFillColor(sf::Color::Transparent);
-			this->bar2.setFillColor(sf::Color::Transparent);
+			removeCross();
 			break;
 
 		case 2: // HIT
@@ -73,9 +63,9 @@ void Field::update(short unsigned fieldState)
 			setDot();
 			break;
 
-		case 5: // 
+		case 5: // BLOCKED
 			this->shape.setFillColor(this->emptyColor);
-			this->dot.setFillColor(sf::Color::Transparent);
+			removeDot();
 			setCross(sf::Color(60, 60, 60), 3.f);
 			break;
 
@@ -87,47 +77,49 @@ void Field::update(short unsigned fieldState)
 
 void Field::setCross(sf::Color color, float size)
 {
-	this->bar1.setFillColor(color);
+	// Cross
+	this->bar1.setPosition(sf::Vector2f(
+		this->y * this->crossLength + this->offsetX + 8.f,
+		this->x * this->crossLength + this->offsetY + 5.f)
+	);
 	this->bar1.setSize(sf::Vector2f(this->crossLength - 2, size));
+	this->bar1.setFillColor(color);
+	this->bar1.setRotation(45);
 
-	this->bar2.setFillColor(color);
+	this->bar2.setPosition(sf::Vector2f(
+		this->y * this->crossLength + this->offsetX + 5.f,
+		this->x * this->crossLength + this->offsetY + 32.f)
+	);
 	this->bar2.setSize(sf::Vector2f(this->crossLength - 2, size));
+	this->bar2.setFillColor(color);
+	this->bar2.setRotation(-45);
+}
+
+void Field::removeCross()
+{
+	this->bar1.setFillColor(sf::Color::Transparent);
+	this->bar2.setFillColor(sf::Color::Transparent);
 }
 
 void Field::setDot()
 {
+	// Dot
+	this->dot.setPosition(sf::Vector2f(
+		this->y * this->crossLength + this->offsetX + this->crossLength / 2 - 8.f,
+		this->x * this->crossLength + this->offsetY + this->crossLength / 2 - 8.f));
+	this->dot.setRadius(8);
+	this->dot.setFillColor(sf::Color::Transparent);
 	this->dot.setFillColor(sf::Color(80, 80, 80));
+}
+
+void Field::removeDot()
+{
+	this->dot.setFillColor(sf::Color::Transparent);
 }
 
 void Field::reveal()
 {
 	this->hidden = false;
-}
-
-void Field::setHovered(bool hover)
-{
-	//this->hovered = hover;
-	
-}
-
-// Accessors
-const bool Field::isHidden() const
-{
-	return hidden;
-}
-
-const bool Field::isHovered() const {
-	return hovered;
-}
-
-const bool Field::isMouseOverShape(const sf::Vector2f mousePos) const
-{
-	return this->shape.getGlobalBounds().contains(mousePos);
-}
-
-const sf::RectangleShape Field::getShape() const
-{
-	return shape;
 }
 
 // Render

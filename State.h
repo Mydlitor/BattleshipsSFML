@@ -26,7 +26,6 @@ protected:
 	sf::RenderWindow* window;
 	std::stack<State*>* states;
 	bool quit;
-	bool fullscreen;
 
 	// Mouse
 	sf::Vector2i mousePosWindow;

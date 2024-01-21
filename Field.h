@@ -8,14 +8,10 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
-
 class Field
 {
 private:
 	bool hidden;
-	bool checked;
-	bool hovered;
-	float crossLength;
 
 	// Field shape
 	sf::RectangleShape shape;
@@ -23,6 +19,11 @@ private:
 	// Cross shape
 	sf::RectangleShape bar1;
 	sf::RectangleShape bar2;
+	float crossLength;
+	int x;
+	int y;
+	float offsetX;
+	float offsetY;
 
 	// Dot shape
 	sf::CircleShape dot;
@@ -41,17 +42,11 @@ public:
 	
 	// Functions
 	void setCross(sf::Color, float);
+	void removeCross();
 	void setDot();
+	void removeDot();
 	void reveal();
-	void setHovered(bool isHovered);
-
-	// Accessors
-	const bool isHidden() const;
-	const bool isHovered() const;
-	const sf::RectangleShape getShape() const;
-	const bool isMouseOverShape(const sf::Vector2f mousePos) const;
 
 	void update(short unsigned fieldState);
 	void render(sf::RenderTarget* target);
 };
-

@@ -560,6 +560,7 @@ void ShipPlacementState::updateButtons()
             for (int j = 0; j < this->gridSize; j++)
             {
                 this->playerBoard[i][j] = 0;
+                this->playerGrid[i][j]->update(0);
             }
         }
 

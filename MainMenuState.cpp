@@ -56,6 +56,8 @@ MainMenuState::MainMenuState(sf::RenderWindow* window, std::stack<State*>* state
 
 MainMenuState::~MainMenuState()
 {
+	delete this->window;
+
 	auto button = this->buttons.begin();
 	for (button = this->buttons.begin(); button != this->buttons.end(); ++button)
 	{
