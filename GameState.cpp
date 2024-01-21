@@ -576,6 +576,17 @@ void GameState::update() //main game loop
 
         this->result = checkWin();
     }
+    else
+    {
+        for (int i = 0; i < this->gridSize; i++)
+        {
+            for (int j = 0; j < this->gridSize; j++)
+            {
+                this->enemyGrid[i][j]->reveal();
+            }
+        }
+        this->updateGrids();
+    }
 
     this->updateInput();
 
