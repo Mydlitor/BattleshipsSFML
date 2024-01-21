@@ -16,6 +16,16 @@ void MainMenuState::initBackground()
 	);
 
 	this->background.setFillColor(sf::Color(255, 255, 255));
+
+	if (!this->iconTexture.loadFromFile("assets\\graphics\\icon.png"))
+	{
+		std::cout << "ERROR::MainMenuState::INITIMAGE::Failed to load icon!" << "\n";
+	}
+
+	this->iconSprite.setTexture(this->iconTexture);
+
+	//iconSprite.setPosition
+
 }
 
 void MainMenuState::initText()
@@ -23,6 +33,13 @@ void MainMenuState::initText()
 	this->titleText = sf::Text("Battleship Game", this->font1, 80);
 	this->titleText.setFillColor(sf::Color(37, 65, 99));
 	this->titleText.setPosition(this->window->getSize().x / 2.f - this->titleText.getGlobalBounds().width / 2.f, this->window->getSize().y / 3.f);
+
+	this->authorsNames = sf::Text("Created by Jakub Sputo & Kacper Strzesak", this->font2, 30);
+	this->authorsNames.setFillColor(sf::Color(37, 65, 99));
+	this->authorsNames.setPosition(
+		this->window->getSize().x / 2.f - this->authorsNames.getGlobalBounds().width / 2.f, 
+		this->window->getSize().y / 3.f + 350.f
+	);
 }
 
 void MainMenuState::initButtons()
@@ -117,6 +134,7 @@ void MainMenuState::renderButtons(sf::RenderTarget* target)
 void MainMenuState::renderText(sf::RenderTarget& target)
 {
 	target.draw(this->titleText);
+	target.draw(this->authorsNames);
 }
 
 void MainMenuState::render(sf::RenderTarget* target)
@@ -127,6 +145,8 @@ void MainMenuState::render(sf::RenderTarget* target)
 	target->draw(this->background);
 
 	this->renderText(*this->window);
+
+	target->draw(this->iconSprite);
 
 	this->renderButtons(target);
 }

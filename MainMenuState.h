@@ -10,9 +10,12 @@ class MainMenuState :
 private:
     // Variables
     sf::RectangleShape background;
+    sf::Texture iconTexture;
+    sf::Sprite iconSprite;
 
     // Text
     sf::Text titleText;
+    sf::Text authorsNames;
 
     // Menu buttons
     std::map<std::string, Button*> buttons;
