@@ -59,7 +59,7 @@ void ShipPlacementState::initGrid()
                 this->playerGridStartPosition.y,
                 this->fieldSize,
                 false,
-                sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), sf::Color(8, 98, 201), sf::Color(8, 98, 201), sf::Color(8, 98, 201)
+                sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201), sf::Color(8, 98, 201), sf::Color::Black, sf::Color::Black
             ));
         }
 

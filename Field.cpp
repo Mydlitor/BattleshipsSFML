@@ -4,6 +4,7 @@ Field::Field(int x, int y, float offsetX, float offsetY, float size, bool status
 	sf::Color borderColor, sf::Color emptyColor, sf::Color shipColor, sf::Color hitColor, sf::Color sankColor, sf::Color missColor)
 {
 	this->hidden = status;
+	this->crossLength = size;
 
 	// Shape
 	this->shape.setPosition(sf::Vector2f(y * size + offsetX, x * size + offsetY));
@@ -23,12 +24,10 @@ Field::Field(int x, int y, float offsetX, float offsetY, float size, bool status
 
 	// Cross
 	this->bar1.setPosition(sf::Vector2f(y * size + offsetX + 8.f, x * size + offsetY + 5.f));
-	this->bar1.setSize(sf::Vector2f(size - 2.f, size / 8));
 	this->bar1.setFillColor(sf::Color::Transparent);
 	this->bar1.setRotation(45);
 
 	this->bar2.setPosition(sf::Vector2f(y * size + offsetX + 5.f, x * size + offsetY + 32.f));
-	this->bar2.setSize(sf::Vector2f(size - 2.f, size / 8));
 	this->bar2.setFillColor(sf::Color::Transparent);
 	this->bar2.setRotation(-45);
 
@@ -55,16 +54,18 @@ void Field::update(short unsigned fieldState)
 
 		case 1: // SHIP
 			this->shape.setFillColor(this->shipColor);
+			this->bar1.setFillColor(sf::Color::Transparent);
+			this->bar2.setFillColor(sf::Color::Transparent);
 			break;
 
 		case 2: // HIT
 			this->shape.setFillColor(this->shipColor);
-			setCross(sf::Color::Red);
+			setCross(sf::Color::Red, 4.5);
 			break;
 
 		case 3: // SANK
 			this->shape.setFillColor(this->sankColor);
-			setCross(sf::Color::Red);
+			setCross(sf::Color::Red, 4.5);
 			break;
 
 		case 4: // MISS
@@ -72,21 +73,25 @@ void Field::update(short unsigned fieldState)
 			setDot();
 			break;
 
-		case 5: // MISS
-			this->shape.setFillColor(this->missColor);
-			setCross(sf::Color::Black);
+		case 5: // 
+			this->shape.setFillColor(this->emptyColor);
+			this->dot.setFillColor(sf::Color::Transparent);
+			setCross(sf::Color(60, 60, 60), 3.f);
 			break;
 
 		default:
-			this->shape.setFillColor(sf::Color::White);
+			this->shape.setFillColor(this->emptyColor);
 			break;
 		}
 }
 
-void Field::setCross(sf::Color color)
+void Field::setCross(sf::Color color, float size)
 {
 	this->bar1.setFillColor(color);
+	this->bar1.setSize(sf::Vector2f(this->crossLength - 2, size));
+
 	this->bar2.setFillColor(color);
+	this->bar2.setSize(sf::Vector2f(this->crossLength - 2, size));
 }
 
 void Field::setDot()

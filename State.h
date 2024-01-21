@@ -25,18 +25,20 @@ protected:
 	// Variables
 	sf::RenderWindow* window;
 	std::stack<State*>* states;
-	
 	bool quit;
+	bool fullscreen;
 
 	// Mouse
 	sf::Vector2i mousePosWindow;
 	sf::Vector2f mousePosView;
 
 	// Resources
-	// Fonts
+
+	// - Fonts
 	sf::Font font1;
 	sf::Font font2;
-	// Audio
+
+	// - Audio
 	sf::SoundBuffer selectSoundBuffer;
 	sf::SoundBuffer placingSoundBuffer;
 	sf::SoundBuffer resetSoundBuffer;
@@ -50,7 +52,6 @@ protected:
 	sf::Sound hitSound;
 
 	// Functions
-	//virtual void updateInput() = 0;
 	virtual void initFonts();
 	virtual void initAudio();
 

@@ -46,7 +46,7 @@
       <Filter>Pliki zasobów</Filter>
     </ClCompile>
     <ClCompile Include="ResultBar.cpp">
-      <Filter>Pliki źródłowe</Filter>
+      <Filter>Pliki zasobów</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,7 +75,7 @@
       <Filter>Pliki zasobów</Filter>
     </ClInclude>
     <ClInclude Include="ResultBar.h">
-      <Filter>Pliki nagłówkowe</Filter>
+      <Filter>Pliki zasobów</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

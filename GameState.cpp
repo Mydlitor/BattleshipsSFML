@@ -3,6 +3,7 @@
 // Initializer functions
 void GameState::initVariables()
 {
+    this->fieldNames = { "Empty", "Ship", "Hit", "Sank", "Miss", "Blocked" };
     this->playerGridStartPosition = sf::Vector2f(450.f, 250.f);
     this->enemyGridStartPosition = sf::Vector2f(1000.f, 250.f);
     this->gridSize = 10;
@@ -14,6 +15,7 @@ void GameState::initVariables()
     this->prev_guess.y = -1;
     this->dir = -1;
     this->ship_hit = false;
+    this->result = 0;
 }
 
 void GameState::initText()
@@ -61,11 +63,6 @@ void GameState::initText()
         this->enemyRowIndexes[i].setFillColor(sf::Color(37, 65, 99));
         this->enemyRowIndexes[i].setPosition({ this->enemyGridStartPosition.x - 30.f, this->enemyGridStartPosition.y + 5.f + i * this->fieldSize });
     }
-
-    // Legend text
-    this->legendText = sf::Text("Legend", this->font1, 30);
-    this->legendText.setFillColor(sf::Color(37, 65, 99));
-    this->legendText.setPosition(this->playerGridStartPosition.x, this->playerGridStartPosition.y + 450.f);
 }
 
 void GameState::initGrids() {
@@ -128,70 +125,41 @@ void GameState::initGrids() {
 
 void GameState::initLegend()
 {
-    this->legendFields["EMPTY_FIELD"] = new Field(0, 0,
-        this->playerGridStartPosition.x,
-        this->playerGridStartPosition.y + 500.f,
-        this->fieldSize,
-        false,
-        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
-        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+    this->legendText = sf::Text("LEGEND", this->font1, 30);
+    this->legendText.setFillColor(sf::Color(37, 65, 99));
+    this->legendText.setPosition(this->playerGridStartPosition.x - 360.f, this->playerGridStartPosition.y);
+
+    for (int i = 0; i < 6; ++i)
+    {
+        this->legendFieldsText[this->fieldNames[i]] = sf::Text(this->fieldNames[i], this->font2, 30);
+        this->legendFieldsText[this->fieldNames[i]].setFillColor(sf::Color(37, 65, 99));
+        this->legendFieldsText[this->fieldNames[i]].setPosition(this->playerGridStartPosition.x - 300.f, this->playerGridStartPosition.y + 50.f + i * 50);
+
+        this->legendFields[this->fieldNames[i]] = new Field(0, 0,
+            this->playerGridStartPosition.x - 360.f,
+            this->playerGridStartPosition.y + 50.f + i * 50,
+            this->fieldSize,
+            false,
+            sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
+            sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
+        );
+
+        this->legendFields[this->fieldNames[i]]->update(i);
+    }
+}
+
+void GameState::initResultBar()
+{
+    this->resultBar = new ResultBar(
+        *this->window,
+        &this->font1,
+        this->result
     );
-
-    this->legendFields["SHIP_FIELD"] = new Field(0, 0,
-        this->playerGridStartPosition.x,
-        this->playerGridStartPosition.y + 550.f,
-        this->fieldSize,
-        false,
-        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
-        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-    );
-
-    this->legendFields["HIT_FIELD"] = new Field(0, 0,
-        this->playerGridStartPosition.x,
-        this->playerGridStartPosition.y + 600.f,
-        this->fieldSize,
-        false,
-        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
-        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-    );
-
-    this->legendFields["SANK_FIELD"] = new Field(0, 0,
-        this->playerGridStartPosition.x,
-        this->playerGridStartPosition.y + 650.f,
-        this->fieldSize,
-        false,
-        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
-        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-    );
-
-    this->legendFields["MISS_FIELD"] = new Field(0, 0,
-        this->playerGridStartPosition.x,
-        this->playerGridStartPosition.y + 700.f,
-        this->fieldSize,
-        false,
-        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
-        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-    );
-
-    this->legendFields["5_FIELD"] = new Field(0, 0,
-        this->playerGridStartPosition.x,
-        this->playerGridStartPosition.y + 700.f,
-        this->fieldSize,
-        false,
-        sf::Color(37, 65, 99), sf::Color(255, 255, 255), sf::Color(8, 98, 201),
-        sf::Color(220, 0, 0), sf::Color(230, 230, 230), sf::Color(230, 230, 230)
-    );
-
-    this->legendFields["SHIP_FIELD"]->update(1);
-    this->legendFields["HIT_FIELD"]->update(2);
-    this->legendFields["SANK_FIELD"]->update(3);
-    this->legendFields["MISS_FIELD"]->update(4);
-
 }
 
 // Constructors / Destructors
 GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard)
-    : State(window, states, playerBoard, enemyBoard)/*, resultBar(*window)*/
+    : State(window, states, playerBoard, enemyBoard)
 {
     this->initFonts();
     this->initAudio();
@@ -199,6 +167,7 @@ GameState::GameState(sf::RenderWindow* window, std::stack<State*>* states, int**
     this->initText();
     this->initLegend();
     this->initGrids();
+    this->initResultBar();
 }
 
 GameState::~GameState()
@@ -216,6 +185,14 @@ GameState::~GameState()
             delete field;
         }
     }
+
+    auto field = this->legendFields.begin();
+    for (field = this->legendFields.begin(); field != this->legendFields.end(); ++field)
+    {
+        delete field->second;
+    }
+
+    delete this->resultBar;
 }
 
 // Functions
@@ -670,6 +647,7 @@ void GameState::update() //main game loop
 }
 
 
+
 void GameState::renderText(sf::RenderTarget& target)
 {
     target.draw(this->playerTitleText);
@@ -703,6 +681,11 @@ void GameState::renderText(sf::RenderTarget& target)
 
     // Legend text
     target.draw(this->legendText);
+
+    for (auto& text : this->legendFieldsText)
+    {
+        target.draw(text.second);
+    }
 }
 
 void GameState::renderLegend(sf::RenderTarget* target)
@@ -734,6 +717,11 @@ void GameState::renderGrids(sf::RenderTarget* target)
     }
 }
 
+void GameState::renderResultBar(sf::RenderTarget& target)
+{
+    this->resultBar->render(target);
+}
+
 void GameState::render(sf::RenderTarget* target)
 {
     this->window->clear(sf::Color(255, 255, 255));
@@ -743,6 +731,9 @@ void GameState::render(sf::RenderTarget* target)
     this->renderLegend(target);
 
     this->renderGrids(target);
+
+    if (this->result != 0)
+        this->renderResultBar(*this->window);
 
     this->window->display();
 }

@@ -8,7 +8,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 
-//enum field_states { EMPTY = 0, SHIP, HIT, SANK, MISS };
 
 class Field
 {
@@ -16,6 +15,7 @@ private:
 	bool hidden;
 	bool checked;
 	bool hovered;
+	float crossLength;
 
 	// Field shape
 	sf::RectangleShape shape;
@@ -40,7 +40,7 @@ public:
 	~Field();
 	
 	// Functions
-	void setCross(sf::Color);
+	void setCross(sf::Color, float);
 	void setDot();
 	void reveal();
 	void setHovered(bool isHovered);

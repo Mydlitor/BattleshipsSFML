@@ -15,10 +15,12 @@ class ResultBar
 private:
 	sf::RectangleShape background;
 	sf::RectangleShape container;
-
+	sf::Text text;
+	sf::Font* font;
+	sf::String textContent;
 
 public:
-	ResultBar(sf::RenderWindow& window);
+	ResultBar(sf::RenderWindow& window, sf::Font* font, int winner);
 	~ResultBar();
 
 	// Functions

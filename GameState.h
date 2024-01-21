@@ -2,7 +2,7 @@
 
 #include "State.h"
 #include "Field.h"
-//#include "ResultBar.h"
+#include "ResultBar.h"
 
 class GameState :
     public State
@@ -13,7 +13,7 @@ private:
     sf::Vector2f enemyGridStartPosition;
     int gridSize;
     float fieldSize;
-    bool result;
+    int result;
 
     // Mouse
     sf::Vector2i mousePosGrid;
@@ -35,15 +35,18 @@ private:
 
     // Legend objects
     std::map<std::string, Field*> legendFields;
+    std::vector<std::string> fieldNames;
+    std::map<std::string, sf::Text> legendFieldsText;
 
     // Result bar
-    //ResultBar resultBar;
+    ResultBar* resultBar;
 
     // Private functions
     void initVariables();
     void initText();
     void initGrids();
     void initLegend();
+    void initResultBar();
 
 public:
     GameState(sf::RenderWindow* window, std::stack<State*>* states, int** playerBoard, int** enemyBoard);
@@ -76,10 +79,12 @@ public:
     bool guessingRules(Point, int);
     void sAB(Point& A, Point& B);
     int winCondition();
+
     // Render
     void renderText(sf::RenderTarget& target);
     void renderLegend(sf::RenderTarget* target);
     void renderGrids(sf::RenderTarget* target = nullptr);
+    void renderResultBar(sf::RenderTarget& target);
     void render(sf::RenderTarget* target = nullptr);
 
     void consoleDebug();
